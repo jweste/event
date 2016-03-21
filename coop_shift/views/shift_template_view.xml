@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ********************************************************************** -->
+<!-- See __openerp__.py file for Copyright and Licence Informations.         -->
+<!-- ********************************************************************** -->
+<openerp>
+    <data>
+
+<!-- View : shift.template -->
+        <record id="view_shift_template_form" model="ir.ui.view">
+            <field name="model">shift.template</field>
+            <field name="arch" type="xml">
+                <form string="Shift Template">
+                    <sheet>
+                        <div class="oe_button_box" name="button_box" groups="base.group_user">
+                            <button name="toggle_active" type="object"
+                                    class="oe_stat_button" icon="fa-archive">
+                                <field name="active" widget="boolean_button"
+                                    options='{"terminology": "archive"}'/>
+                            </button>
+                        </div>
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only"/>
+                            <h1><field name="name" placeholder="Template Name"/></h1>
+                        </div>
+                        <group name="main_field_group">
+                            <group name="header">
+                                <field name="address_id" context="{'show_address': 1}" options='{"always_reload": True}'/>
+                                <!-- <field name="organizer_id"/> -->
+                                <field name="company_id" groups="base.group_multi_company"/>
+                                <field name="user_id"/>
+                                <field name="shift_type_id"/>
+                                <!-- <field name="date_tz" /> -->
+                                <!-- <field name="auto_schedule"/> -->
+                                <button name="%(action_manual_schedule)" type="action"/>
+                            </group>
+                            <group name="datetime">
+                                <field name="start_date"/>
+                                <field name="start_time" widget="float_time"/>
+                                <field name="duration" widget="float_time"/>
+                                <field name="end_time" widget="float_time"/>
+                            </group>
+
+                            <!-- avertissement si on veut modifier un shift lié à une récurrence
+                            possibilité de détacher cet événement
+                            pas de possibilité de faire "à partir de cette date"
+                            <group attrs="{'invisible': [('recurrency','==',False)]}" class="oe_edit_only ">
+                                <p class='alert alert-warning'> This shift is linked to a recurrence...<br/>
+                                    <button type="object" name="open_after_detach_shift"  string="Update only this instance"  help="Click here to update only this instance and not all recurrences. " class="oe_link"/>
+                                </p>
+                            </group> -->
+                            
+
+                        </group>
+                        <notebook>
+                            <page name="registrations" string="Registrations">
+                                <group>
+                                    <group>
+                                        <field name="seats_min"/>
+                                        <label for="seats_availability"/>
+                                        <div>
+                                            <field name="seats_availability" widget='radio'/>
+                                            <span  attrs="{'invisible': [('seats_availability', '=', 'unlimited')]}" class="oe_read_only">
+                                                to 
+                                            </span>
+                                            <field name="seats_max" attrs="{'invisible': [('seats_availability', '=', 'unlimited')], 'required': [('seats_availability', '=', 'limited')]}"/>
+                                        </div>
+                                    </group>
+                                    <!-- <group>
+                                        <field name="auto_confirm" groups="base.group_no_one"/>
+                                    </group> -->
+                                </group>
+                                <group>
+                                    <field name="attendee_ids" nolabel="1">
+                                        <tree>
+                                            <field name="partner_id"/>
+                                            <field name="name"/>
+                                            <field name="phone"/>
+                                            <field name="email"/>
+                                            <field name="state"/>
+                                            <button name="confirm_registration" string="Confirm Registration" states="draft" type="object" icon="gtk-apply"/>
+                                            <button name="button_reg_close" string="Attended the Shift" states="open" type="object" icon="gtk-jump-to"/>
+                                            <button name="button_reg_cancel" string="Cancel Registration" states="draft,open" type="object" icon="gtk-cancel"/>
+                                        </tree>
+                                    </field>
+                                </group>
+                            </page>
+                            <page string="Recurrence">
+                                <group>
+                                    <div>
+                                        <group>
+                                            <field name="recurrency"/>
+                                        </group>
+                                        <div attrs="{'invisible': [('recurrency', '=', False)]}">
+                                            <group>
+                                                <label for="interval"/>
+                                                <div class="o_row">
+                                                    <field name="interval" attrs="{'required': [('recurrency', '=', True)]}"/>
+                                                    <field name="rrule_type" attrs="{'required': [('recurrency', '=', True)]}"/>
+                                                </div>
+                                                <label string="Until" for="end_type"/>
+                                                <div class="o_row">
+                                                    <field name="end_type" attrs="{'required': [('recurrency', '=', True)]}"/>
+                                                    <field name="count" attrs="{'invisible': [('end_type', '!=', 'count')], 'required': [('recurrency', '=', True)]}"/>
+                                                    <field name="final_date" attrs="{'invisible': [('end_type', '!=', 'end_date')], 'required': [('end_type', '=', 'end_date')]}"/>
+                                                </div>
+                                            </group>
+                                            <group attrs="{'invisible': [('rrule_type', '!=', 'weekly')]}" name="weekdays">
+                                                <field name="mo"/>
+                                                <field name="tu"/>
+                                                <field name="we"/>
+                                                <field name="th"/>
+                                                <field name="fr"/>
+                                                <field name="sa"/>
+                                                <field name="su"/>
+                                            </group>
+                                            <group attrs="{'invisible': [('rrule_type', '!=', 'monthly')]}">
+                                                <label string="Day of Month" for="month_by"/>
+                                                <div class="o_row">
+                                                    <field name="month_by"/>
+                                                    <field name="day"
+                                                        attrs="{'required': [('month_by', '=', 'date'), ('rrule_type', '=', 'monthly')],
+                                                                'invisible': [('month_by', '!=', 'date')]}"/>
+                                                    <field name="byday" string="The"
+                                                        attrs="{'required': [('month_by', '=', 'day'), ('rrule_type', '=', 'monthly')],
+                                                                'invisible': [('month_by', '!=', 'day')]}"/>
+                                                    <field name="week_list" nolabel="1"
+                                                        attrs="{'required': [('month_by', '=', 'day'), ('rrule_type', '=', 'monthly')],
+                                                                'invisible': [('month_by', '!=', 'day')]}"/>
+                                                </div>
+                                            </group>
+                                        </div>
+                                    </div>
+                                    <group>
+                                        <field name="rrule" invisible="1" readonly="0" />                                    
+                                        <field name="recurrent_id" invisible="1" />
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Email Schedule" groups="coop_shift.group_email_scheduling">
+                                <group>
+                                    <field name="reply_to"/>
+                                </group>
+                                <field name="shift_mail_ids">
+                                    <tree string="Email Schedule" editable="bottom">
+                                        <field name="sequence" widget="handle"/>
+                                        <field name="template_id" />
+                                        <field name="interval_nbr" attrs="{'readonly':[('interval_unit','=','now')]}"/>
+                                        <field name="interval_unit"/>
+                                        <field name="interval_type"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="action_shift_template" model="ir.actions.act_window">
+            <field name="name">Shift Templates</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">shift.template</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="target">current</field>
+            <field name="domain">[]</field>
+        </record>
+        <menuitem
+            id="menu_shift_template"
+            action="action_shift_template"
+            name="Templates"
+            parent="coop_shift.shift_main_menu"
+            groups="group_shift_manager"
+            sequence="4"/>
+    </data>
+</openerp>
