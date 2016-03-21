@@ -22,7 +22,7 @@
 ##############################################################################
 
 import pytz
-from openerp import models, fields, api, SUPERUSER_ID
+from openerp import models, fields, api
 from datetime import datetime
 
 
