@@ -72,14 +72,9 @@
                                 <group>
                                     <field name="attendee_ids" nolabel="1">
                                         <tree>
-                                            <field name="partner_id"/>
                                             <field name="name"/>
                                             <field name="phone"/>
                                             <field name="email"/>
-                                            <field name="state"/>
-                                            <button name="confirm_registration" string="Confirm Registration" states="draft" type="object" icon="gtk-apply"/>
-                                            <button name="button_reg_close" string="Attended the Shift" states="open" type="object" icon="gtk-jump-to"/>
-                                            <button name="button_reg_cancel" string="Cancel Registration" states="draft,open" type="object" icon="gtk-cancel"/>
                                         </tree>
                                     </field>
                                 </group>

@@ -64,8 +64,8 @@ class ShiftTemplate(models.Model):
         help="""For each shift you can define a minimum reserved seats (number
         of attendees), if it does not reach the mentioned registrations the
         shift can not be confirmed (keep 0 to ignore this rule)""")
-    attendee_ids = fields.One2many(
-        'shift.registration', 'shift_id', 'Attendees', ondelete='cascade')
+    attendee_ids = fields.Many2many(
+        'res.partner', string='Attendees')
     reply_to = fields.Char(
         'Reply-To Email',
         help="""The email address of the organizer is likely to be put here,

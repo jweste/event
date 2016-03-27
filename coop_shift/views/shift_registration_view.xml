@@ -41,7 +41,7 @@
                     <sheet string="Registration">
                         <group>
                             <group string="Attendee" name="attendee">
-                                <field name="partner_id" attrs="{'readonly':[('state', '!=', 'draft')]}"/>
+                                <field name="partner_id" attrs="{'readonly':[('state', '!=', 'draft')]}" groups="coop_shift.group_shift_manager"/>
                                 <field name="name"/>
                                 <field name="phone"/>
                                 <field name="email"/>
@@ -159,7 +159,6 @@
             id="menu_action_registration"
             parent="coop_shift.shift_main_menu"
             action="action_registration"
-            groups="group_shift_manager"
             sequence="20"/>
     </data>
 </openerp>

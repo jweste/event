@@ -47,8 +47,46 @@ class ShiftShift(models.Model):
     registration_ids = fields.One2many(
         'shift.registration', 'shift_id', string='Attendees',
         readonly=False, states={'done': [('readonly', True)]})
+    seats_reserved = fields.Integer(compute='_compute_seats_shift')
+    seats_available = fields.Integer(compute='_compute_seats_shift')
+    seats_unconfirmed = fields.Integer(compute='_compute_seats_shift')
+    seats_used = fields.Integer(compute='_compute_seats_shift')
+    seats_expected = fields.Integer(compute='_compute_seats_shift')
 
     @api.model
     def _default_event_mail_ids(self):
         return None
 
+    @api.multi
+    @api.depends('seats_max', 'registration_ids.state')
+    def _compute_seats_shift(self):
+        """ Determine reserved, available, reserved but unconfirmed and used
+        seats. """
+        # initialize fields to 0
+        for shift in self:
+            shift.seats_unconfirmed = shift.seats_reserved =\
+                shift.seats_used = shift.seats_available = 0
+        # aggregate registrations by shift and by state
+        if self.ids:
+            state_field = {
+                'draft': 'seats_unconfirmed',
+                'open': 'seats_reserved',
+                'done': 'seats_used',
+            }
+            query = """ SELECT shift_id, state, count(shift_id)
+                        FROM shift_registration
+                        WHERE shift_id IN %s
+                        AND state IN ('draft', 'open', 'done')
+                        GROUP BY shift_id, state
+                    """
+            self._cr.execute(query, (tuple(self.ids),))
+            for shift_id, state, num in self._cr.fetchall():
+                shift = self.browse(shift_id)
+                shift[state_field[state]] += num
+        # compute seats_available
+        for shift in self:
+            if shift.seats_max > 0:
+                shift.seats_available = shift.seats_max - (
+                    shift.seats_reserved + shift.seats_used)
+            shift.seats_expected = shift.seats_unconfirmed +\
+                shift.seats_reserved + shift.seats_used

@@ -163,7 +163,7 @@
                                         </a>
                                         <t t-if="(record.seats_reserved.raw_value + record.seats_used.raw_value) > 0 "><br/>
                                              <t t-esc="record.seats_reserved.raw_value + record.seats_used.raw_value"/> Confirmed attendees
-                                        <a name="action_shift_registration_report" type="object" >&#40;stats&#41;</a>
+                                        <!-- <a name="action_shift_registration_report" type="object" >&#40;stats&#41;</a> -->
                                         </t>
                                     </h4>
                                 </div>

@@ -35,7 +35,8 @@ class ShiftRegistration(models.Model):
     email = fields.Char(readonly=True)
     phone = fields.Char(readonly=True)
     name = fields.Char(readonly=True)
-    partner_id = fields.Many2one(required=True)
+    partner_id = fields.Many2one(
+        required=True, default=lambda self: self.env.user.partner_id)
     user_id = fields.Many2one(related="shift_id.user_id")
 
     @api.onchange('partner_id')
