@@ -23,7 +23,7 @@
 
 {
     'name': 'Coop Shift',
-    'version': '9.0.0',
+    'version': '9.0.1',
     'category': 'Tools',
     'description': """
 This module copys the event.event object to create a shift.shift object. This
@@ -48,6 +48,7 @@ Copyright, Author and Licence :
         'mail',
     ],
     'data': [
+        'wizard/shift_template_wizard_view.xml',
         'data/coop_shift_data.xml',
         'data/email_template_data.xml',
         'security/shift_security.xml',

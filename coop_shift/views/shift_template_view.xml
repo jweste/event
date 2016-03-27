@@ -4,6 +4,15 @@
 <!-- ********************************************************************** -->
 <openerp>
     <data>
+        <record id="action_create_shift_shifts" model="ir.actions.act_window">
+            <field name="name">Create Shifts</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">shift.template.wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="view_id" ref="view_shift_template_wizard_form"/>
+        </record>
 
 <!-- View : shift.template -->
         <record id="view_shift_template_form" model="ir.ui.view">
@@ -17,6 +26,8 @@
                                 <field name="active" widget="boolean_button"
                                     options='{"terminology": "archive"}'/>
                             </button>
+                            <button name="%(coop_shift.action_create_shift_shifts)d" type="action"
+                                    class="oe_stat_button" icon="fa-calendar" string="Create shifts"/>
                         </div>
                         <div class="oe_title">
                             <label for="name" class="oe_edit_only"/>
@@ -126,7 +137,8 @@
                                         </div>
                                     </div>
                                     <group>
-                                        <field name="rrule" invisible="1" readonly="0" />                                    
+                                        <!-- <field name="rrule"/>  -->
+                                        <!-- <field name="rrule" invisible="1"/>                                     -->
                                         <field name="recurrent_id" invisible="1" />
                                     </group>
                                 </group>
@@ -165,6 +177,6 @@
             name="Templates"
             parent="coop_shift.shift_main_menu"
             groups="group_shift_manager"
-            sequence="4"/>
+            sequence="14"/>
     </data>
 </openerp>

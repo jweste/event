@@ -22,8 +22,11 @@
 ##############################################################################
 
 import pytz
-from openerp import models, fields, api
+import re
+from openerp import models, fields, api, _
 from datetime import datetime
+from dateutil import rrule
+from openerp.exceptions import UserError
 
 
 class ShiftTemplate(models.Model):
@@ -94,9 +97,6 @@ class ShiftTemplate(models.Model):
     #     string='Confirmation not required', compute='_compute_auto_confirm')
 
     # RECURRENCE FIELD
-    rrule = fields.Char(
-        compute="_get_rulestring", fnct_inv="_set_rulestring", store=True,
-        string='Recurrent Rule')
     rrule_type = fields.Selection([
         ('daily', 'Day(s)'), ('weekly', 'Week(s)'), ('monthly', 'Month(s)'),
         ('yearly', 'Year(s)')], 'Recurrency', default='weekly',
@@ -130,8 +130,39 @@ class ShiftTemplate(models.Model):
         ('1', 'First'), ('2', 'Second'), ('3', 'Third'), ('4', 'Fourth'),
         ('5', 'Fifth'), ('-1', 'Last')], 'By day')
     final_date = fields.Date('Repeat Until')  # The last shift of a recurrence
+    rrule = fields.Char(
+        compute="_get_rulestring", store=True, string='Recurrent Rule',)
 
     # Private section
+    def _get_recurrent_fields(self):
+        return ['byday', 'recurrency', 'final_date', 'rrule_type', 'month_by',
+                'interval', 'count', 'end_type', 'mo', 'tu', 'we', 'th', 'fr',
+                'sa', 'su', 'day', 'week_list']
+
+    @api.one
+    @api.depends(
+        'byday', 'recurrency', 'final_date', 'rrule_type', 'month_by',
+        'interval', 'count', 'end_type', 'mo', 'tu', 'we', 'th', 'fr',
+        'sa', 'su', 'day', 'week_list')
+    def _get_rulestring(self):
+        """
+        Gets Recurrence rule string according to value type RECUR of iCalendar
+        from the values given.
+        @return: dictionary of rrule value.
+        """
+
+        # read these fields as SUPERUSER because if the record is private a
+        # normal search could raise an error
+        recurrent_fields = self._get_recurrent_fields()
+        fields = self.sudo().read(recurrent_fields)[0]
+        if fields['end_type'] == 'no_end':
+            fields['end_type'] = 'count'
+            fields['count'] = 999
+        if fields['recurrency']:
+            self.rrule = self.compute_rule_string(fields)
+        else:
+            self.rrule = ''
+
     @api.model
     def _default_shift_mail_ids(self):
         return [(0, 0, {
@@ -148,42 +179,6 @@ class ShiftTemplate(models.Model):
     # def _compute_auto_confirm(self):
     #     self.auto_confirm = self.env['ir.values'].get_default(
     #         'shift.config.settings', 'auto_confirmation')
-
-    # def _get_rulestring(self, cr, uid, ids, name, arg, context=None):
-    #     """Gets Recurrence rule string according to value type RECUR of
-    #        iCalendar from the values given.
-    #     @return: dictionary of rrule value.
-    #     """
-    #     result = {}
-    #     if not isinstance(ids, list):
-    #         ids = [ids]
-    #     # read these fields as SUPERUSER because if the record is private a
-    #     # normal search could raise an error
-    #     recurrent_fields = self._get_recurrent_fields(cr, uid,
-    #     context=context)
-    #     shifts = self.read(
-    #         cr, SUPERUSER_ID, ids, recurrent_fields, context=context)
-    #     for shift in shifts:
-    #         if shift['recurrency']:
-    #             result[shift['id']] = self.compute_rule_string(shift)
-    #         else:
-    #             result[shift['id']] = ''
-    #     return result
-
-    # def _set_rulestring(
-    #         self, cr, uid, ids, field_name, field_value, args, context=None):
-    #     if not isinstance(ids, list):
-    #         ids = [ids]
-    #     data = self._get_empty_rrule_data()
-    #     if field_value:
-    #         data['recurrency'] = True
-    #         for shift in self.browse(cr, uid, ids, context=context):
-    #             rdate = shift.start
-    #             update_data = self._parse_rrule(field_value, dict(data),
-    #             rdate)
-    #             data.update(update_data)
-    #             self.write(cr, uid, ids, data, context=context)
-    #     return True
 
     @api.onchange('duration', 'start_time')
     @api.multi
@@ -242,3 +237,92 @@ class ShiftTemplate(models.Model):
                     template.week_list = "SU"
                 template.day = start_date.day
                 template.byday = "%s" % ((start_date.day - 1) // 7 + 1)
+
+    @api.multi
+    def get_recurrent_dates(self, after=None, before=None):
+        for template in self:
+            start = datetime.strptime(after or template.start_date, "%Y-%m-%d")
+            stop = datetime.strptime(before or template.final_date, "%Y-%m-%d")
+            return rrule.rrulestr(str(template.rrule)).between(
+                after=start, before=stop, inc=True)
+
+    def compute_rule_string(self, data):
+        """
+        Compute rule string according to value type RECUR of iCalendar from
+        the values given.
+        @param self: the object pointer
+        @param data: dictionary of freq and interval value
+        @return: string containing recurring rule (empty if no rule)
+        """
+        if data['interval'] and data['interval'] < 0:
+            raise UserError(_('interval cannot be negative.'))
+        if data['count'] and data['count'] <= 0:
+            raise UserError(_('Event recurrence interval cannot be negative.'))
+
+        def get_week_string(freq, data):
+            weekdays = ['mo', 'tu', 'we', 'th', 'fr', 'sa', 'su']
+            if freq == 'weekly':
+                byday = map(
+                    lambda x: x.upper(), filter(
+                        lambda x: data.get(x) and x in weekdays, data))
+                if byday:
+                    return ';BYDAY=' + ','.join(byday)
+            return ''
+
+        def get_month_string(freq, data):
+            if freq == 'monthly':
+                if data.get('month_by') == 'date' and (
+                        data.get('day') < 1 or data.get('day') > 31):
+                    raise UserError(_(
+                        "Please select a proper day of the month."))
+
+                if data.get('month_by') == 'day':  # Eg : 2nd Monday of month
+                    return ';BYDAY=' + data.get('byday') + data.get(
+                        'week_list')
+                elif data.get('month_by') == 'date':  # Eg : 16th of the month
+                    return ';BYMONTHDAY=' + str(data.get('day'))
+            return ''
+
+        def get_end_date(data):
+            if data.get('final_date'):
+                data['end_date_new'] = ''.join((re.compile('\d')).findall(
+                    data.get('final_date'))) + 'T235959Z'
+            return (
+                data.get('end_type') == 'count' and
+                (';COUNT=' + str(data.get('count'))) or ''
+                ) +\
+                ((
+                    data.get('end_date_new') and
+                    data.get('end_type') == 'end_date' and
+                    (';UNTIL=' + data.get('end_date_new'))) or '')
+
+        freq = data.get('rrule_type', False)  # day/week/month/year
+        res = ''
+        if freq:
+            interval_srting = data.get('interval') and\
+                (';INTERVAL=' + str(data.get('interval'))) or ''
+            res = 'FREQ=' + freq.upper() + get_week_string(freq, data) +\
+                interval_srting + get_end_date(data) +\
+                get_month_string(freq, data)
+        return res
+
+    def _get_empty_rrule_data(self):
+        return {
+            'byday': False,
+            'recurrency': False,
+            'final_date': False,
+            'rrule_type': False,
+            'month_by': False,
+            'interval': 0,
+            'count': False,
+            'end_type': False,
+            'mo': False,
+            'tu': False,
+            'we': False,
+            'th': False,
+            'fr': False,
+            'sa': False,
+            'su': False,
+            'day': False,
+            'week_list': False
+        }

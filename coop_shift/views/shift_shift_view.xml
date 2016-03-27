@@ -36,6 +36,9 @@
                             <label for="name" class="oe_edit_only"/>
                             <h1><field name="name" placeholder="Shift Name"/></h1>
                         </div>
+                        <group name="template" groups="coop_shift.group_shift_manager">
+                            <field name="shift_template_id"/>
+                        </group>
                         <group name="main_field_group">
                             <group>
                                 <field name="address_id" context="{'show_address': 1}" options='{"always_reload": True}'/>
