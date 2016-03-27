@@ -61,4 +61,7 @@ Copyright, Author and Licence :
         'security/ir_rule_data.yml',
         'data/module_data.xml',
     ],
+    'demo': [
+        'data/shift_demo.xml',
+    ],
 }
