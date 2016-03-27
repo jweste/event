@@ -29,9 +29,18 @@ class ShiftShift(models.Model):
     _name = 'shift.shift'
     _description = 'Shift Template'
 
+    @api.model
+    def _default_shift_mail_ids(self):
+        return [(0, 0, {
+            'interval_unit': 'now',
+            'interval_type': 'after_sub',
+            'template_id': self.env.ref('coop_shift.shift_subscription')
+        })]
+
+    event_mail_ids = fields.One2many(default=None)
     shift_mail_ids = fields.One2many(
         'shift.mail', 'shift_id', string='Mail Schedule',
-        default=lambda self: self._default_event_mail_ids())
+        default=lambda self: self._default_shift_mail_ids())
     shift_type_id = fields.Many2one(
         'shift.type', string='Category', required=True,
         readonly=False, states={'done': [('readonly', True)]})
@@ -41,4 +50,5 @@ class ShiftShift(models.Model):
 
     @api.model
     def _default_event_mail_ids(self):
-        return super(ShiftShift, self)._default_event_mail_ids()
+        return None
+

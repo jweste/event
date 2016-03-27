@@ -69,7 +69,7 @@
                                     </group>
                                 </group>
                             </page>
-                            <page string="Email Schedule" groups="coop_shift.group_email_scheduling">
+                            <page string="Email Schedule" groups="event.group_email_scheduling">
                                 <group>
                                     <field name="reply_to"/>
                                 </group>

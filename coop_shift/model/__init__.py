@@ -22,9 +22,9 @@
 ##############################################################################
 
 from . import shift_mail
+from . import shift_template_mail
 from . import shift_registration
 from . import shift_shift
 from . import shift_template
-from . import shift_template_mail
 from . import shift_type
 from . import shift_mail_registration
