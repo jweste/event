@@ -285,7 +285,7 @@ class ShiftTemplate(models.Model):
 
         def get_end_date(data):
             if data.get('final_date'):
-                data['end_date_new'] = ''.join((re.compile('\d')).findall(
+                data['end_date_new'] = ''.join((re.compile(r'\d')).findall(
                     data.get('final_date'))) + 'T235959Z'
             return (
                 data.get('end_type') == 'count' and
