@@ -36,22 +36,22 @@
                             <label for="name" class="oe_edit_only"/>
                             <h1><field name="name" placeholder="Shift Name"/></h1>
                         </div>
-                        <group name="template" groups="coop_shift.group_shift_manager">
-                            <field name="shift_template_id"/>
-                        </group>
                         <group name="main_field_group">
                             <group>
+                                <field name="shift_template_id" groups="coop_shift.group_shift_manager"/>
+                                <field name="user_id"/>
+                                <field name="shift_type_id"/>
+                                <!-- <field name="date_tz" /> -->
+                            </group>
+                            <group name="datetime">
+                                <field name="week_number"/>
+                                <field name="date_begin" string="Start"/>
+                                <field name="date_end" string="End"/>
+                            </group>
+                            <group groups="base.group_no_one">
                                 <field name="address_id" context="{'show_address': 1}" options='{"always_reload": True}'/>
                                 <!-- <field name="organizer_id"/> -->
                                 <field name="company_id" groups="base.group_multi_company"/>
-                            </group>
-                            <group>
-                                <field name="user_id"/>
-                                <field name="week_number"/>
-                                <field name="shift_type_id"/>
-                                <field name="date_begin" string="Start"/>
-                                <field name="date_end" string="End"/>
-                                <!-- <field name="date_tz" /> -->
                             </group>
                         </group>
                         <notebook>
