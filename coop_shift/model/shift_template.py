@@ -92,8 +92,8 @@ class ShiftTemplate(models.Model):
     start_date = fields.Date(string='Start Date', required=True, help="""
         First date this shift will be scheduled""")
     start_time = fields.Float(string='Start Time', required=True,)
-    duration = fields.Float('Duration (hours)',)
-    end_time = fields.Float(string='End Time', required=True,)
+    duration = fields.Float('Duration (hours)', default=3.0)
+    end_time = fields.Float(string='End Time', required=True, readonly=True)
 
     # auto_schedule = fields.Boolean('Auto Schedule')
     # auto_confirm = fields.Boolean(
