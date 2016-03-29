@@ -39,6 +39,7 @@
                                 <!-- <field name="organizer_id"/> -->
                                 <field name="company_id" groups="base.group_multi_company"/>
                                 <field name="user_id"/>
+                                <field name="week_number"/>
                                 <field name="shift_type_id"/>
                                 <!-- <field name="date_tz" /> -->
                                 <!-- <field name="auto_schedule"/> -->

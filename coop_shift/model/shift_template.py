@@ -49,7 +49,10 @@ class ShiftTemplate(models.Model):
     #     'res.partner', string='Organizer',
     #     default=lambda self: self.env.user.company_id.partner_id)
     shift_type_id = fields.Many2one(
-        'shift.type', string='Category', required=True)
+        'shift.type', string='Category', required=False)
+    week_number = fields.Selection(
+        [(1, 'Week A'), (2, 'Week B'), (3, 'Week C'), (4, 'Week D')],
+        string='Week', required=True)
     color = fields.Integer('Kanban Color Index')
     shift_mail_ids = fields.One2many(
         'shift.template.mail', 'shift_template_id', string='Mail Schedule',

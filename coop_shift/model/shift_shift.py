@@ -42,8 +42,11 @@ class ShiftShift(models.Model):
         'shift.mail', 'shift_id', string='Mail Schedule',
         default=lambda self: self._default_shift_mail_ids())
     shift_type_id = fields.Many2one(
-        'shift.type', string='Category', required=True,
+        'shift.type', string='Category', required=False,
         readonly=False, states={'done': [('readonly', True)]})
+    week_number = fields.Selection(
+        [(1, 'Week A'), (2, 'Week B'), (3, 'Week C'), (4, 'Week D')],
+        string='Week', required=True)
     registration_ids = fields.One2many(
         'shift.registration', 'shift_id', string='Attendees',
         readonly=False, states={'done': [('readonly', True)]})

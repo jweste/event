@@ -47,6 +47,7 @@
                             </group>
                             <group>
                                 <field name="user_id"/>
+                                <field name="week_number"/>
                                 <field name="shift_type_id"/>
                                 <field name="date_begin" string="Start"/>
                                 <field name="date_end" string="End"/>
@@ -103,6 +104,7 @@
             <field name="arch" type="xml">
                 <tree string="Shifts" decoration-bf="message_needaction==True" decoration-danger="(seats_min and seats_min&gt;seats_reserved) or (seats_max and seats_max&lt;seats_reserved)" decoration-muted="state=='cancel'">
                     <field name="name"/>
+                    <field name="week_number"/>
                     <field name="shift_type_id"/>
                     <field name="date_begin"/>
                     <field name="date_end"/>
@@ -204,6 +206,7 @@
                     <separator/>
                     <filter string="Upcoming" name="upcoming"
                         domain="['&amp;', ('state', '!=', 'cancel'), ('date_begin','&gt;=', datetime.datetime.combine(context_today(), datetime.time(0,0,0)))]" help="Upcoming shifts from today" />
+                    <field name="week_number"/>
                     <field name="shift_type_id"/>
                     <field name="user_id"/>
                     <separator/>
@@ -211,6 +214,7 @@
                     <group expand="0" string="Group By">
                         <filter string="Responsible" context="{'group_by': 'user_id'}"/>
                         <filter string="Shift Type" context="{'group_by':'shift_type_id'}"/>
+                        <filter string="Week" context="{'group_by':'week_number'}"/>
                         <filter string="Status" context="{'group_by':'state'}"/>
                         <filter string="Start Month" domain="[]" context="{'group_by':'date_begin'}"/>
                     </group>

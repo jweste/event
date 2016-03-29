@@ -79,6 +79,7 @@ class ShiftTemplate(models.TransientModel):
                     'address_id': template.address_id.id,
                     'description': template.description,
                     'shift_type_id': template.shift_type_id.id,
+                    'week_number': template.week_number,
                 }
                 shift_id = shift_obj.create(vals)
                 for attendee in template.attendee_ids:
