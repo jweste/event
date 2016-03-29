@@ -91,7 +91,7 @@
                                     </field>
                                 </group>
                             </page>
-                            <page string="Recurrence">
+                            <page string="Recurrence" groups="coop_shift.group_recurrency">
                                 <group>
                                     <div>
                                         <group>
