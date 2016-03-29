@@ -43,7 +43,6 @@
                                 <field name="shift_type_id"/>
                                 <!-- <field name="date_tz" /> -->
                                 <!-- <field name="auto_schedule"/> -->
-                                <button name="%(action_manual_schedule)" type="action"/>
                             </group>
                             <group name="datetime">
                                 <field name="start_date"/>
