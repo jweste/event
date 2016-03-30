@@ -21,23 +21,43 @@
 #
 ##############################################################################
 
-from openerp import models, fields, api
+from openerp import models, fields, api, _
 from datetime import datetime, timedelta
+from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
+from openerp.exceptions import UserError
 
 
 class ShiftTemplate(models.TransientModel):
     _name = 'shift.template.wizard'
     _description = 'Shift Template Wizard'
 
-    # @api.multi
     @api.model
-    def _get_default_date(self):
+    def _get_last_shift_date(self):
         template_id = self.env.context.get('active_id', False)
         if template_id:
-            return self.env['shift.template'].browse(template_id).start_date
-        else:
-            return datetime.now()
+            template = self.env['shift.template'].browse(template_id)
+            if template.shift_ids:
+                return max(
+                    shift.date_begin for shift in template.shift_ids)
+        return False
 
+    @api.model
+    def _get_default_date(self):
+        lsd = self._get_last_shift_date()
+        if lsd:
+            lsd = datetime.strptime(lsd, DEFAULT_SERVER_DATETIME_FORMAT)
+            return datetime.strftime(
+                lsd + timedelta(days=1), DEFAULT_SERVER_DATETIME_FORMAT)
+        else:
+            template_id = self.env.context.get('active_id', False)
+            if template_id:
+                template = self.env['shift.template'].browse(template_id)
+                return template.start_date
+            else:
+                return datetime.now()
+
+    last_shift_date = fields.Date(
+        'Last created shift date', default=_get_last_shift_date)
     date_from = fields.Date(
         'Plan this Template from', default=_get_default_date)
     date_to = fields.Date('Plan this Template until')
@@ -45,6 +65,9 @@ class ShiftTemplate(models.TransientModel):
     @api.multi
     def create_shifts(self):
         for wizard in self:
+            if wizard.date_from <= wizard.last_shift_date:
+                raise UserError(_(
+                    "'From date' can't be before 'Last shift date'"))
             shift_obj = self.env['shift.shift']
             registration_obj = self.env['shift.registration']
             template_id = self.env.context.get('active_id', False)

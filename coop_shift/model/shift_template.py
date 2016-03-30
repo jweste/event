@@ -38,6 +38,8 @@ class ShiftTemplate(models.Model):
     name = fields.Char(
         string='Template Name', translate=True, required=True)
     active = fields.Boolean(default=True, track_visibility="onchange")
+    shift_ids = fields.One2many(
+        'shift.shift', 'shift_template_id', string='Shifts', readonly=True)
     user_id = fields.Many2one(
         'res.users', string='Shift Leader', required=True,
         default=lambda self: self.env.user)

@@ -8,6 +8,7 @@
         <field name="arch" type="xml">
             <form string="Create Shifts">
                 <group>
+                    <field name="last_shift_date" readonly="True"/>
                     <field name="date_from" required="True"/>
                     <field name="date_to" required="True"/>
                 </group>
