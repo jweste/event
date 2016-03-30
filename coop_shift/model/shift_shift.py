@@ -56,6 +56,12 @@ class ShiftShift(models.Model):
     seats_unconfirmed = fields.Integer(compute='_compute_seats_shift')
     seats_used = fields.Integer(compute='_compute_seats_shift')
     seats_expected = fields.Integer(compute='_compute_seats_shift')
+    auto_confirm = fields.Boolean(
+        string='Confirmation not required', compute='_compute_auto_confirm')
+
+    @api.one
+    def _compute_auto_confirm(self):
+        self.auto_confirm = False
 
     @api.model
     def _default_event_mail_ids(self):
