@@ -336,6 +336,14 @@ class ShiftTemplate(models.Model):
     def write(self, vals):
         if vals.get('start_time', False) or vals.get('duration', False):
             vals['end_time'] = (
-                vals.get('start_time', False) or self.start_time) +\
-                (vals.get('duration', False) or self.duration)
+                vals.get('start_time', False) or self.start_time or 0) +\
+                (vals.get('duration', False) or self.duration or 0)
         return super(ShiftTemplate, self).write(vals)
+
+    @api.model
+    def create(self, vals):
+        if vals.get('start_time', False) or vals.get('duration', False):
+            vals['end_time'] = (
+                vals.get('start_time', False) or self.start_time or 0) +\
+                (vals.get('duration', False) or self.duration or 0)
+        return super(ShiftTemplate, self).create(vals)
