@@ -21,4 +21,4 @@
 #
 ##############################################################################
 
-from . import shift_template_wizard
+from . import create_shifts_wizard

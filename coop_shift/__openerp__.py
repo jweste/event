@@ -48,7 +48,7 @@ Copyright, Author and Licence :
         'mail',
     ],
     'data': [
-        'wizard/shift_template_wizard_view.xml',
+        'wizard/create_shifts_wizard_view.xml',
         'data/coop_shift_data.xml',
         'data/email_template_data.xml',
         'security/shift_security.xml',
