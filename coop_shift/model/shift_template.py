@@ -29,6 +29,14 @@ from dateutil import rrule
 from openerp.exceptions import UserError
 
 
+WEEK_NUMBERS = [
+    (1, 'Week A'),
+    (2, 'Week B'),
+    (3, 'Week C'),
+    (4, 'Week D')
+    ]
+
+
 class ShiftTemplate(models.Model):
     _name = 'shift.template'
     _description = 'Shift Template'
@@ -36,7 +44,7 @@ class ShiftTemplate(models.Model):
 
     # Columns section
     name = fields.Char(
-        string='Template Name', translate=True, required=True)
+        string='Template Name', compute="_compute_template_name", store=True)
     active = fields.Boolean(default=True, track_visibility="onchange")
     shift_ids = fields.One2many(
         'shift.shift', 'shift_template_id', string='Shifts', readonly=True)
@@ -52,9 +60,7 @@ class ShiftTemplate(models.Model):
     #     default=lambda self: self.env.user.company_id.partner_id)
     shift_type_id = fields.Many2one(
         'shift.type', string='Category', required=False)
-    week_number = fields.Selection(
-        [(1, 'Week A'), (2, 'Week B'), (3, 'Week C'), (4, 'Week D')],
-        string='Week', required=True)
+    week_number = fields.Selection(WEEK_NUMBERS, string='Week', required=True)
     color = fields.Integer('Kanban Color Index')
     shift_mail_ids = fields.One2many(
         'shift.template.mail', 'shift_template_id', string='Mail Schedule',
@@ -139,6 +145,42 @@ class ShiftTemplate(models.Model):
         compute="_get_rulestring", store=True, string='Recurrent Rule',)
 
     # Private section
+    @api.depends(
+        'shift_type_id', 'week_number', 'mo', 'tu', 'we', 'th', 'fr', 'sa',
+        'su', 'start_time')
+    def _compute_template_name(self):
+        name = self.shift_type_id.name + "-" if self.shift_type_id else ""
+        name += WEEK_NUMBERS[self.week_number - 1][1] + "-"
+        name += "Mon-" if self.mo else ""
+        name += "Tue-" if self.tu else ""
+        name += "Wed-" if self.we else ""
+        name += "Thu-" if self.th else ""
+        name += "Fri-" if self.fr else ""
+        name += "Sat-" if self.sa else ""
+        name += "Sun-" if self.su else ""
+        name += "%s:%s" % (
+            int(self.start_time),
+            int(round((self.start_time - int(self.start_time)) * 60)))
+        self.name = name
+
+    @api.onchange(
+        'shift_type_id', 'week_number', 'mo', 'tu', 'we', 'th', 'fr', 'sa',
+        'su', 'start_time')
+    def _get_template_name(self):
+        name = self.shift_type_id.name + "-" if self.shift_type_id else ""
+        name += WEEK_NUMBERS[self.week_number - 1][1] + "-"
+        name += "Mon-" if self.mo else ""
+        name += "Tue-" if self.tu else ""
+        name += "Wed-" if self.we else ""
+        name += "Thu-" if self.th else ""
+        name += "Fri-" if self.fr else ""
+        name += "Sat-" if self.sa else ""
+        name += "Sun-" if self.su else ""
+        name += "%s:%s" % (
+            int(self.start_time),
+            int(round((self.start_time - int(self.start_time)) * 60)))
+        self.name = name
+
     def _get_recurrent_fields(self):
         return ['byday', 'recurrency', 'final_date', 'rrule_type', 'month_by',
                 'interval', 'count', 'end_type', 'mo', 'tu', 'we', 'th', 'fr',
