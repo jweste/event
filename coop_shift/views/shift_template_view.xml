@@ -7,7 +7,7 @@
         <record id="action_create_shift_shifts" model="ir.actions.act_window">
             <field name="name">Create Shifts</field>
             <field name="type">ir.actions.act_window</field>
-            <field name="res_model">shift.template.wizard</field>
+            <field name="res_model">create.shifts.wizard</field>
             <field name="view_type">form</field>
             <field name="view_mode">form</field>
             <field name="target">new</field>
