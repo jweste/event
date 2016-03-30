@@ -48,7 +48,7 @@
                                 <field name="start_date"/>
                                 <field name="start_time" widget="float_time"/>
                                 <field name="duration" widget="float_time" groups="base.group_no_one"/>
-                                <field name="end_time" widget="float_time"/>
+                                <field name="end_time" widget="float_time" readonly="1"/>
                             </group>
 
                             <!-- avertissement si on veut modifier un shift lié à une récurrence

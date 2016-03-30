@@ -93,7 +93,7 @@ class ShiftTemplate(models.Model):
         First date this shift will be scheduled""")
     start_time = fields.Float(string='Start Time', required=True,)
     duration = fields.Float('Duration (hours)', default=3.0)
-    end_time = fields.Float(string='End Time', required=True, readonly=True)
+    end_time = fields.Float(string='End Time')
 
     # auto_schedule = fields.Boolean('Auto Schedule')
     # auto_confirm = fields.Boolean(
@@ -329,3 +329,11 @@ class ShiftTemplate(models.Model):
             'day': False,
             'week_list': False
         }
+
+    @api.multi
+    def write(self, vals):
+        if vals.get('start_time', False) or vals.get('duration', False):
+            vals['end_time'] = (
+                vals.get('start_time', False) or self.start_time) +\
+                (vals.get('duration', False) or self.duration)
+        return super(ShiftTemplate, self).write(vals)
