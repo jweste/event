@@ -21,7 +21,8 @@
 #
 ##############################################################################
 
-from openerp import models, fields, api
+from openerp import models, fields, api, _
+from openerp.exceptions import UserError
 
 
 class ShiftShift(models.Model):
@@ -58,6 +59,12 @@ class ShiftShift(models.Model):
     seats_expected = fields.Integer(compute='_compute_seats_shift')
     auto_confirm = fields.Boolean(
         string='Confirmation not required', compute='_compute_auto_confirm')
+
+    _sql_constraints = [(
+        'template_date_uniq',
+        'unique (template_id, date_begin, company_id)',
+        'The same template cannot be planned several time at the same date !'),
+    ]
 
     @api.one
     def _compute_auto_confirm(self):
@@ -100,3 +107,11 @@ class ShiftShift(models.Model):
                     shift.seats_reserved + shift.seats_used)
             shift.seats_expected = shift.seats_unconfirmed +\
                 shift.seats_reserved + shift.seats_used
+
+    @api.multi
+    def write(self, vals):
+        for shift in self:
+            if shift.state != "draft":
+                raise UserError(_(
+                    'You can only repercute changer on draft shifts.'))
+        return super(ShiftShift, self).write(vals)
