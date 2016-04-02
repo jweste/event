@@ -13,6 +13,15 @@
             <field name="target">new</field>
             <field name="view_id" ref="view_shift_template_wizard_form"/>
         </record>
+        <record id="action_update_shifts" model="ir.actions.act_window">
+            <field name="name">Update Shifts</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">update.shifts.wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="view_id" ref="view_update_shifts_form"/>
+        </record>
 
 <!-- View : shift.template -->
         <record id="view_shift_template_form" model="ir.ui.view">
@@ -21,7 +30,8 @@
                 <form string="Shift Template">
                     <sheet>
                         <header>
-                            <button name="%(coop_shift.action_create_shift_shifts)d" type="action" class="oe_highlight" string="Create shifts"/> <!-- icon="fa-calendar"/> -->
+                            <button name="%(coop_shift.action_create_shift_shifts)d" type="action" class="oe_highlight" icon="fa-cogs" string="Create shifts"/> <!-- icon="fa-calendar"/> -->
+                            <button name="%(coop_shift.action_update_shifts)d" type="action" class="oe_highlight" string="Update shifts" attrs="{'invisible': ['|',('updated_fields','=',False),('updated_fields','=','updated_fields\': u\'}')]}"/>
                         </header>
                         <div class="oe_button_box" name="button_box" groups="base.group_user">
                             <button name="toggle_active" type="object"
@@ -36,8 +46,13 @@
                             <label for="name" class="oe_edit_only"/>
                             <h1><field name="name" placeholder="Template Name"/></h1>
                         </div>
+                        <group attrs="{'invisible': [('updated_fields','=',False)]}">
+                            <p class='alert alert-warning'> You have some changes on this template. You should consider updating the linked shifts with the button<br/>
+                            </p>
+                        </group>
                         <group name="main_field_group">
                             <group name="header">
+                                <field name="updated_fields" invisible="1"/>
                                 <field name="address_id" context="{'show_address': 1}" options='{"always_reload": True}' invisible="1"/>
                                 <!-- <field name="organizer_id"/> -->
                                 <field name="company_id" groups="base.group_multi_company"/>

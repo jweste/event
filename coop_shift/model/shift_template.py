@@ -102,6 +102,7 @@ class ShiftTemplate(models.Model):
     start_time = fields.Float(string='Start Time', required=True,)
     duration = fields.Float('Duration (hours)', default=3.0)
     end_time = fields.Float(string='End Time')
+    updated_fields = fields.Char('Updated Fields')
 
     # auto_schedule = fields.Boolean('Auto Schedule')
     # auto_confirm = fields.Boolean(
@@ -380,6 +381,8 @@ class ShiftTemplate(models.Model):
             vals['end_time'] = (
                 vals.get('start_time', False) or self.start_time or 0) +\
                 (vals.get('duration', False) or self.duration or 0)
+        if 'updated_fields' not in vals.keys():
+            vals['updated_fields'] = str(vals)
         return super(ShiftTemplate, self).write(vals)
 
     @api.model
@@ -388,4 +391,5 @@ class ShiftTemplate(models.Model):
             vals['end_time'] = (
                 vals.get('start_time', False) or self.start_time or 0) +\
                 (vals.get('duration', False) or self.duration or 0)
+        vals['updated_fields'] = str(vals)
         return super(ShiftTemplate, self).create(vals)
