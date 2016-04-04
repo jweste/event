@@ -394,3 +394,7 @@ class ShiftTemplate(models.Model):
                 vals.get('start_time', False) or self.start_time or 0) +\
                 (vals.get('duration', False) or self.duration or 0)
         return super(ShiftTemplate, self).create(vals)
+
+    @api.multi
+    def discard_changes(self):
+        return self.write({'updated_fields': ''})
