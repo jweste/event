@@ -152,7 +152,8 @@ class ShiftTemplate(models.Model):
         'su', 'start_time')
     def _compute_template_name(self):
         name = self.shift_type_id.name + "-" if self.shift_type_id else ""
-        name += WEEK_NUMBERS[self.week_number - 1][1] + "-"
+        name += self.week_number and (
+            WEEK_NUMBERS[self.week_number - 1][1] + "-") or ""
         name += "Mon-" if self.mo else ""
         name += "Tue-" if self.tu else ""
         name += "Wed-" if self.we else ""
