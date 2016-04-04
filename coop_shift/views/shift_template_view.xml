@@ -24,6 +24,46 @@
         </record>
 
 <!-- View : shift.template -->
+
+        <record model="ir.ui.view" id="view_shift_template_tree">
+            <field name="name">shift.template.tree</field>
+            <field name="model">shift.template</field>
+            <field name="arch" type="xml">
+                <tree string="Templates">
+                    <field name="name"/>
+                    <field name="shift_type_id"/>
+                    <field name="week_number"/>
+                    <field name="user_id"/>
+                    <field name="start_date"/>
+                    <field name="start_time"/>
+                    <field name="end_time"/>
+                    <field name="seats_min"/>
+                    <field name="seats_availability"/>
+                    <field name="seats_max" attrs="{'invisible': [('seats_availability','=','unlimited')]}"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_shift_template_search">
+            <field name="name">shift.template.search</field>
+            <field name="model">shift.template</field>
+            <field name="arch" type="xml">
+                <search string="Templates">
+                    <field name="name" string="Template"/>
+                    <field name="week_number"/>
+                    <field name="shift_type_id"/>
+                    <field name="user_id"/>
+                    <separator/>
+                    <filter string="Archived" name="inactive" domain="[('active','=',False)]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Shift Leader" context="{'group_by': 'user_id'}"/>
+                        <filter string="Shift Type" context="{'group_by':'shift_type_id'}"/>
+                        <filter string="Week" context="{'group_by':'week_number'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
         <record id="view_shift_template_form" model="ir.ui.view">
             <field name="model">shift.template</field>
             <field name="arch" type="xml">
