@@ -54,6 +54,7 @@ Copyright, Author and Licence :
         'data/email_template_data.xml',
         'security/shift_security.xml',
         'views/menu.xml',
+        'views/res_partner_view.xml',
         'views/shift_mail_view.xml',
         'views/shift_registration_view.xml',
         'views/shift_shift_view.xml',

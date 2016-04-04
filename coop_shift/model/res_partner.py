@@ -21,11 +21,14 @@
 #
 ##############################################################################
 
-from . import shift_mail
-from . import shift_template_mail
-from . import shift_registration
-from . import shift_shift
-from . import shift_template
-from . import shift_type
-from . import shift_mail_registration
-from . import res_partner
+from openerp import models, fields
+
+
+class ResPartner(models.Model):
+    _inherit = 'res.partner'
+
+    template_ids = fields.Many2many(
+        comodel_name='shift.template', relation='shift_template_partner_rel',
+        column1="partner_id", column2="template_id", string='Registrations')
+    registration_ids = fields.One2many(
+        'shift.registration', "partner_id", 'Registrations')

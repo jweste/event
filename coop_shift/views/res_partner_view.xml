@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ********************************************************************** -->
+<!-- See __openerp__.py file for Copyright and Licence Informations.         -->
+<!-- ********************************************************************** -->
+<openerp>
+    <data>
+        <record id="view_res_partner_shift_form" model="ir.ui.view">
+            <field name="model">res.partner</field>
+            <field name="name">res.partner.form.shift</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <page name="sales_purchases" position="after">
+                    <page name="shifts" string="Shifts">
+                        <field name="template_ids">
+                            <tree>
+                                <field name="name"/>
+                                <field name="user_id"/>
+                                <field name="start_time"/>
+                                <field name="end_time"/>
+                            </tree>
+                        </field>
+                        <field name="registration_ids" readonly="1"/>
+                    </page>
+                </page>
+            </field>
+        </record>
+    </data>
+</openerp>

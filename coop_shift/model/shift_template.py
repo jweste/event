@@ -79,7 +79,8 @@ class ShiftTemplate(models.Model):
         of attendees), if it does not reach the mentioned registrations the
         shift can not be confirmed (keep 0 to ignore this rule)""")
     attendee_ids = fields.Many2many(
-        'res.partner', string='Attendees')
+        comodel_name='res.partner', relation='shift_template_partner_rel',
+        column1="template_id", column2="partner_id", string='Attendees')
     reply_to = fields.Char(
         'Reply-To Email',
         help="""The email address of the organizer is likely to be put here,
