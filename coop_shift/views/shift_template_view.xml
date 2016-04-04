@@ -78,8 +78,6 @@
                                 <field name="active" widget="boolean_button"
                                     options='{"terminology": "archive"}'/>
                             </button>
-                            <!-- <button name="%(coop_shift.action_create_shift_shifts)d" type="action"
-                                    class="oe_stat_button" icon="fa-calendar" string="Create shifts"/> -->
                         </div>
                         <div class="oe_title">
                             <label for="name" class="oe_edit_only"/>
