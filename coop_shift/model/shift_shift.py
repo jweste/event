@@ -68,6 +68,13 @@ class ShiftShift(models.Model):
     ]
 
     @api.one
+    @api.constrains('seats_max', 'seats_available')
+    def _check_seats_limit(self):
+        if self.seats_availability == 'limited' and self.seats_max and\
+                self.seats_available < 0:
+            raise UserError(_('No more available seats.'))
+
+    @api.one
     def _compute_auto_confirm(self):
         self.auto_confirm = False
 
