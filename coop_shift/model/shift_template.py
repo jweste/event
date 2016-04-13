@@ -81,6 +81,23 @@ class ShiftTemplate(models.Model):
     attendee_ids = fields.Many2many(
         comodel_name='res.partner', relation='shift_template_partner_rel',
         column1="template_id", column2="partner_id", string='Attendees')
+    seats_reserved = fields.Integer(
+        string='Reserved Seats',
+        store=True, readonly=True, compute='_compute_seats_template')
+    seats_available = fields.Integer(
+        string='Maximum Attendees',
+        store=True, readonly=True, compute='_compute_seats_template')
+    seats_unconfirmed = fields.Integer(
+        string='Unconfirmed Seat Reservations',
+        store=True, readonly=True, compute='_compute_seats_template')
+    seats_used = fields.Integer(
+        string='Number of Participants',
+        store=True, readonly=True, compute='_compute_seats_template')
+    seats_expected = fields.Integer(
+        string='Number of Expected Attendees',
+        readonly=True, compute='_compute_seats')
+    registration_ids = fields.One2many(
+        'shift.template.registration', 'shift_template_id', string='Attendees')
     reply_to = fields.Char(
         'Reply-To Email',
         help="""The email address of the organizer is likely to be put here,
@@ -145,6 +162,47 @@ class ShiftTemplate(models.Model):
     final_date = fields.Date('Repeat Until')  # The last shift of a recurrence
     rrule = fields.Char(
         compute="_get_rulestring", store=True, string='Recurrent Rule',)
+
+    @api.multi
+    @api.depends('seats_max', 'registration_ids.state')
+    def _compute_seats_template(self):
+        """ Determine reserved, available, reserved but unconfirmed and used
+        seats. """
+        # initialize fields to 0
+        for template in self:
+            template.seats_unconfirmed = template.seats_reserved =\
+                template.seats_used = template.seats_available = 0
+        # aggregate registrations by template and by state
+        if self.ids:
+            state_field = {
+                'draft': 'seats_unconfirmed',
+                'open': 'seats_reserved',
+                'done': 'seats_used',
+            }
+            query = """ SELECT shift_template_id, state, count(shift_template_id)
+                        FROM shift_template_registration
+                        WHERE shift_template_id IN %s
+                        AND state IN ('draft', 'open', 'done')
+                        GROUP BY shift_template_id, state
+                    """
+            self._cr.execute(query, (tuple(self.ids),))
+            for template_id, state, num in self._cr.fetchall():
+                template = self.browse(template_id)
+                template[state_field[state]] += num
+        # compute seats_available
+        for template in self:
+            if template.seats_max > 0:
+                template.seats_available = template.seats_max - (
+                    template.seats_reserved + template.seats_used)
+            template.seats_expected = template.seats_unconfirmed +\
+                template.seats_reserved + template.seats_used
+
+    @api.one
+    @api.constrains('seats_max', 'seats_available')
+    def _check_seats_limit(self):
+        if self.seats_availability == 'limited' and self.seats_max and\
+                self.seats_available < 0:
+            raise UserError(_('No more available seats.'))
 
     # Private section
     @api.depends(
