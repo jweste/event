@@ -23,6 +23,7 @@
 
 from openerp import models, fields, api, _
 from openerp.exceptions import UserError
+from datetime import datetime, timedelta
 
 
 class ShiftShift(models.Model):
@@ -115,3 +116,37 @@ class ShiftShift(models.Model):
                 raise UserError(_(
                     'You can only repercute changer on draft shifts.'))
         return super(ShiftShift, self).write(vals)
+
+    @api.onchange('shift_template_id')
+    def _onchange_template_id(self):
+        if self.shift_template_id:
+            self.name = self.shift_template_id.name
+            self.user_id = self.shift_template_id.user_id
+            self.shift_type_id = self.shift_template_id.shift_type_id
+            self.week_number = self.shift_template_id.week_number
+            cur_date = self.date_begin and datetime.strptime(
+                self.date_begin, "%Y-%m-%d %H:%M:%S").date() or\
+                datetime.strptime(
+                self.shift_template_id.start_date, "%Y-%m-%d")
+            self.date_begin = datetime.strftime(
+                    cur_date + timedelta(
+                        hours=self.shift_template_id.start_time),
+                    "%Y-%m-%d %H:%M:%S")
+            self.date_end = datetime.strftime(
+                    cur_date + timedelta(
+                        hours=self.shift_template_id.end_time),
+                    "%Y-%m-%d %H:%M:%S")
+
+            cur_attendees = [r.partner_id.id for r in self.registration_ids]
+            vals = []
+            for attendee in self.shift_template_id.attendee_ids:
+                if attendee.id not in cur_attendees:
+                    vals.append((0, 0, {
+                        'partner_id': attendee.id,
+                        'state': 'draft',
+                        'email': attendee.email,
+                        'phone': attendee.phone,
+                        'name': attendee.name,
+                        'shift_id': self.id,
+                    }))
+                self.registration_ids = vals
