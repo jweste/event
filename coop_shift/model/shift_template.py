@@ -176,7 +176,8 @@ class ShiftTemplate(models.Model):
                 'open': 'seats_reserved',
                 'done': 'seats_used',
             }
-            query = """ SELECT shift_template_id, state, count(shift_template_id)
+            query = """ SELECT shift_template_id, state,
+                        count(shift_template_id)
                         FROM shift_template_registration
                         WHERE shift_template_id IN %s
                         AND state IN ('draft', 'open', 'done')

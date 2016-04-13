@@ -134,15 +134,15 @@ class ShiftShift(models.Model):
             cur_date = self.date_begin and datetime.strptime(
                 self.date_begin, "%Y-%m-%d %H:%M:%S").date() or\
                 datetime.strptime(
-                self.shift_template_id.start_date, "%Y-%m-%d")
+                    self.shift_template_id.start_date, "%Y-%m-%d")
             self.date_begin = datetime.strftime(
-                    cur_date + timedelta(
-                        hours=self.shift_template_id.start_time),
-                    "%Y-%m-%d %H:%M:%S")
+                cur_date + timedelta(
+                    hours=self.shift_template_id.start_time),
+                "%Y-%m-%d %H:%M:%S")
             self.date_end = datetime.strftime(
-                    cur_date + timedelta(
-                        hours=self.shift_template_id.end_time),
-                    "%Y-%m-%d %H:%M:%S")
+                cur_date + timedelta(
+                    hours=self.shift_template_id.end_time),
+                "%Y-%m-%d %H:%M:%S")
 
             cur_attendees = [r.partner_id.id for r in self.registration_ids]
             vals = []
