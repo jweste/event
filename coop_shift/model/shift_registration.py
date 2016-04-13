@@ -52,3 +52,8 @@ class ShiftRegistration(models.Model):
             self.name = ""
             self.email = ""
             self.phone = ""
+    _sql_constraints = [(
+        'shift_registration_uniq',
+        'unique (shift_id, partner_id)',
+        'This partner is already registered on this Shift !'),
+    ]
