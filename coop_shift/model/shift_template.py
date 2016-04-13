@@ -166,24 +166,6 @@ class ShiftTemplate(models.Model):
             int(round((self.start_time - int(self.start_time)) * 60)))
         self.name = name
 
-    @api.onchange(
-        'shift_type_id', 'week_number', 'mo', 'tu', 'we', 'th', 'fr', 'sa',
-        'su', 'start_time')
-    def _get_template_name(self):
-        name = self.shift_type_id.name + "-" if self.shift_type_id else ""
-        name += WEEK_NUMBERS[self.week_number - 1][1] + "-"
-        name += "Mon-" if self.mo else ""
-        name += "Tue-" if self.tu else ""
-        name += "Wed-" if self.we else ""
-        name += "Thu-" if self.th else ""
-        name += "Fri-" if self.fr else ""
-        name += "Sat-" if self.sa else ""
-        name += "Sun-" if self.su else ""
-        name += "%s:%s" % (
-            int(self.start_time),
-            int(round((self.start_time - int(self.start_time)) * 60)))
-        self.name = name
-
     def _get_recurrent_fields(self):
         return ['byday', 'recurrency', 'final_date', 'rrule_type', 'month_by',
                 'interval', 'count', 'end_type', 'mo', 'tu', 'we', 'th', 'fr',
