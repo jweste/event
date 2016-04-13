@@ -21,7 +21,7 @@
 #
 ##############################################################################
 
-from openerp import models, fields, api
+from openerp import models, fields
 
 
 class ShiftRegistration(models.Model):
@@ -32,26 +32,13 @@ class ShiftRegistration(models.Model):
     event_id = fields.Many2one(required=False)
     shift_id = fields.Many2one(
         'shift.shift', string='Shift', required=True, ondelete='cascade')
-    email = fields.Char(readonly=True)
-    phone = fields.Char(readonly=True)
-    name = fields.Char(readonly=True)
+    email = fields.Char(readonly=True, related='partner_id.email')
+    phone = fields.Char(readonly=True, related='partner_id.phone')
+    name = fields.Char(readonly=True, related='partner_id.name', store=True)
     partner_id = fields.Many2one(
         required=True, default=lambda self: self.env.user.partner_id)
     user_id = fields.Many2one(related="shift_id.user_id")
 
-    @api.onchange('partner_id')
-    def _onchange_partner(self):
-        if self.partner_id:
-            contact_id = self.partner_id.address_get().get('contact', False)
-            if contact_id:
-                contact = self.env['res.partner'].browse(contact_id)
-                self.name = contact.name or ""
-                self.email = contact.email or ""
-                self.phone = contact.phone or ""
-        else:
-            self.name = ""
-            self.email = ""
-            self.phone = ""
     _sql_constraints = [(
         'shift_registration_uniq',
         'unique (shift_id, partner_id)',
