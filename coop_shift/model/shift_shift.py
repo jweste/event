@@ -63,7 +63,7 @@ class ShiftShift(models.Model):
 
     _sql_constraints = [(
         'template_date_uniq',
-        'unique (template_id, date_begin, company_id)',
+        'unique (shift_template_id, date_begin, company_id)',
         'The same template cannot be planned several time at the same date !'),
     ]
 
