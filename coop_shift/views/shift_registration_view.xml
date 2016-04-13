@@ -144,20 +144,10 @@
             context="{'search_default_partner_id': [active_id], 'default_partner_id': active_id}"
             view_type="form"/>
 
-        <record model="ir.actions.act_window" id="action_registration">
-          <field name="name">Attendees</field>
-          <field name="res_model">shift.registration</field>
-          <field name="view_type">form</field>
-          <field name="domain"></field>
-          <field name="view_mode">tree,form,calendar,pivot,graph</field>
-          <field name="context">{}</field>
-          <field name="search_view_id" ref="view_registration_search"/>
-        </record>
-
         <menuitem
             name="Attendees"
             id="menu_action_registration"
-            parent="coop_shift.shift_main_menu"
+            parent="coop_shift.shift_menu"
             action="action_registration"
             sequence="20"/>
     </data>

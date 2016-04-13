@@ -260,7 +260,7 @@
             name="Shifts"
             id="menu_shift_shift"
             action="action_shift_view"
-            parent="coop_shift.shift_main_menu"
+            parent="coop_shift.shift_menu"
             sequence="10"/>
     </data>
 </openerp>

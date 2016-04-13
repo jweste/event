@@ -136,7 +136,7 @@
                                     </group> -->
                                 </group>
                                 <group>
-                                    <field name="attendee_ids" nolabel="1">
+                                    <field name="registration_ids" nolabel="1">
                                         <tree>
                                             <field name="name"/>
                                             <field name="phone"/>
@@ -241,7 +241,7 @@
             id="menu_shift_template"
             action="action_shift_template"
             name="Templates"
-            parent="coop_shift.shift_main_menu"
+            parent="coop_shift.template_menu"
             groups="group_shift_manager"
             sequence="14"/>
     </data>
