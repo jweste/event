@@ -105,10 +105,13 @@ class CreateShifts(models.TransientModel):
                     'week_number': template.week_number,
                 }
                 shift_id = shift_obj.create(vals)
-                for attendee in template.attendee_ids:
+                for attendee in template.registration_ids:
+                    if attendee.state == "cancel":
+                        pass
                     vals = {
-                        'partner_id': attendee.id,
-                        'state': 'draft',
+                        'partner_id': attendee.partner_id.id,
+                        'user_id': template.user_id.id,
+                        'state': attendee.state,
                         'email': attendee.email,
                         'phone': attendee.phone,
                         'name': attendee.name,

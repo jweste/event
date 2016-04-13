@@ -146,7 +146,7 @@ class ShiftShift(models.Model):
 
             cur_attendees = [r.partner_id.id for r in self.registration_ids]
             vals = []
-            for attendee in self.shift_template_id.attendee_ids:
+            for attendee in self.shift_template_id.registration_ids:
                 if attendee.id not in cur_attendees:
                     vals.append((0, 0, {
                         'partner_id': attendee.id,

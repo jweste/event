@@ -21,12 +21,26 @@
 #
 ##############################################################################
 
-from . import shift_mail
-from . import shift_template_mail
-from . import shift_registration
-from . import shift_shift
-from . import shift_template
-from . import shift_template_registration
-from . import shift_type
-from . import shift_mail_registration
-from . import res_partner
+from openerp import models, fields
+
+
+class ShiftTemplateRegistration(models.Model):
+    _inherit = 'event.registration'
+    _name = 'shift.template.registration'
+    _description = 'Attendee'
+
+    event_id = fields.Many2one(required=False)
+    shift_template_id = fields.Many2one(
+        'shift.template', string='Template', required=True, ondelete='cascade')
+    email = fields.Char(readonly=True, related='partner_id.email')
+    phone = fields.Char(readonly=True, related='partner_id.phone')
+    name = fields.Char(readonly=True, related='partner_id.name', store=True)
+    partner_id = fields.Many2one(
+        required=True, default=lambda self: self.env.user.partner_id)
+    user_id = fields.Many2one(related="shift_template_id.user_id")
+
+    _sql_constraints = [(
+        'template_registration_uniq',
+        'unique (shift_template_id, partner_id)',
+        'This partner is already registered on this Shift Template !'),
+    ]

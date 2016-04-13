@@ -143,11 +143,12 @@
                                     </group> -->
                                 </group>
                                 <group>
-                                    <field name="registration_ids" nolabel="1">
+                                    <field name="registration_ids" nolabel="1" readonly="1">
                                         <tree>
                                             <field name="name"/>
                                             <field name="phone"/>
                                             <field name="email"/>
+                                            <field name="state"/>
                                         </tree>
                                     </field>
                                 </group>

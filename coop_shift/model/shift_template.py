@@ -78,9 +78,6 @@ class ShiftTemplate(models.Model):
         help="""For each shift you can define a minimum reserved seats (number
         of attendees), if it does not reach the mentioned registrations the
         shift can not be confirmed (keep 0 to ignore this rule)""")
-    attendee_ids = fields.Many2many(
-        comodel_name='res.partner', relation='shift_template_partner_rel',
-        column1="template_id", column2="partner_id", string='Attendees')
     seats_reserved = fields.Integer(
         string='Reserved Seats',
         store=True, readonly=True, compute='_compute_seats_template')
