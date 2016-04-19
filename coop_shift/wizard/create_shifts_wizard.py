@@ -70,6 +70,7 @@ class CreateShifts(models.TransientModel):
                     "'From date' can't be before 'Last shift date'"))
             shift_obj = self.env['shift.shift']
             registration_obj = self.env['shift.registration']
+            ticket_obj = self.env['shift.ticket']
             template_id = self.env.context.get('active_id', False)
             if not template_id:
                 return
@@ -90,7 +91,6 @@ class CreateShifts(models.TransientModel):
                     'name': template.name,
                     'user_id': template.user_id.id,
                     'company_id': template.company_id.id,
-                    # 'organizer_id': template.organizer_id,
                     'seats_max': template.seats_max,
                     'seats_availability': template.seats_availability,
                     'seats_min': template.seats_min,
@@ -103,18 +103,31 @@ class CreateShifts(models.TransientModel):
                     'description': template.description,
                     'shift_type_id': template.shift_type_id.id,
                     'week_number': template.week_number,
+                    'shift_ticket_ids': None,
                 }
                 shift_id = shift_obj.create(vals)
-                for attendee in template.registration_ids:
-                    if attendee.state == "cancel":
-                        pass
+                for ticket in template.shift_ticket_ids:
                     vals = {
-                        'partner_id': attendee.partner_id.id,
-                        'user_id': template.user_id.id,
-                        'state': attendee.state,
-                        'email': attendee.email,
-                        'phone': attendee.phone,
-                        'name': attendee.name,
+                        'name': ticket.name,
                         'shift_id': shift_id.id,
+                        'product_id': ticket.product_id.id,
+                        'price': ticket.price,
+                        'deadline': ticket.deadline,
+                        'seats_availability': ticket.seats_availability,
                     }
-                    registration_obj.create(vals)
+                    ticket_id = ticket_obj.create(vals)
+
+                    for attendee in ticket.registration_ids:
+                        if attendee.state == "cancel":
+                            pass
+                        vals = {
+                            'partner_id': attendee.partner_id.id,
+                            'user_id': template.user_id.id,
+                            'state': attendee.state,
+                            'email': attendee.email,
+                            'phone': attendee.phone,
+                            'name': attendee.name,
+                            'shift_id': shift_id.id,
+                            'shift_ticket_id': ticket_id.id,
+                        }
+                        registration_obj.create(vals)

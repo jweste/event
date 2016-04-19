@@ -60,9 +60,12 @@ class ShiftShift(models.Model):
     seats_expected = fields.Integer(compute='_compute_seats_shift')
     auto_confirm = fields.Boolean(
         string='Confirmation not required', compute='_compute_auto_confirm')
+    event_ticket_ids = fields.One2many(
+        default=lambda rec: rec._default_tickets()
+        )
     shift_ticket_ids = fields.One2many(
         'shift.ticket', 'shift_id', string='Shift Ticket',
-        default=lambda rec: rec._default_tickets(), copy=True)
+        default=lambda rec: rec._default_shift_tickets(), copy=True)
 
     _sql_constraints = [(
         'template_date_uniq',
@@ -72,6 +75,10 @@ class ShiftShift(models.Model):
 
     @api.model
     def _default_tickets(self):
+        return
+
+    @api.model
+    def _default_shift_tickets(self):
         try:
             product = self.env.ref('coop_shift.product_product_shift_standard')
             product2 = self.env.ref('coop_shift.product_product_shift_ftop')
@@ -145,6 +152,13 @@ class ShiftShift(models.Model):
                 raise UserError(_(
                     'You can only repercute changer on draft shifts.'))
         return super(ShiftShift, self).write(vals)
+
+    @api.multi
+    def create(self, vals):
+        for shift in self:
+            if vals.get('event_ticket_ids', False):
+                del vals['event_ticket_ids']
+        return super(ShiftShift, self).create(vals)
 
     @api.onchange('shift_template_id')
     def _onchange_template_id(self):
