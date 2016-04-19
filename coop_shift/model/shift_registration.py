@@ -21,7 +21,8 @@
 #
 ##############################################################################
 
-from openerp import models, fields
+from openerp import models, fields, api, _
+from openerp.exceptions import UserError
 
 
 class ShiftRegistration(models.Model):
@@ -38,9 +39,17 @@ class ShiftRegistration(models.Model):
     partner_id = fields.Many2one(
         required=True, default=lambda self: self.env.user.partner_id)
     user_id = fields.Many2one(related="shift_id.user_id")
+    shift_ticket_id = fields.Many2one('shift.ticket', 'Shift Ticket')
 
     _sql_constraints = [(
         'shift_registration_uniq',
         'unique (shift_id, partner_id)',
         'This partner is already registered on this Shift !'),
     ]
+
+    @api.one
+    @api.constrains('shift_ticket_id', 'state')
+    def _check_ticket_seats_limit(self):
+        if self.shift_ticket_id.seats_max and\
+                self.shift_ticket_id.seats_available < 0:
+            raise UserError(_('No more available seats for this ticket'))

@@ -45,6 +45,7 @@ Copyright, Author and Licence :
     'depends': [
         'base',
         'event',
+        'event_sale',
         'mail',
     ],
     'data': [
@@ -54,6 +55,7 @@ Copyright, Author and Licence :
         'data/email_template_data.xml',
         'security/shift_security.xml',
         'views/menu.xml',
+        'views/product_view.xml',
         'views/res_partner_view.xml',
         'views/shift_mail_view.xml',
         'views/shift_registration_view.xml',

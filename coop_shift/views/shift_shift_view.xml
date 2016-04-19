@@ -58,20 +58,21 @@
                             <page name="registrations" string="Registrations">
                                 <group>
                                     <group>
+                                        <field name="auto_confirm" invisible="1"/>
                                         <field name="seats_min"/>
-                                        <label for="seats_availability"/>
-                                        <div>
-                                            <field name="seats_availability" widget='radio'/>
-                                            <span  attrs="{'invisible': [('seats_availability', '=', 'unlimited')]}" class="oe_read_only">
-                                                to 
-                                            </span>
-                                            <field name="seats_max" attrs="{'invisible': [('seats_availability', '=', 'unlimited')], 'required': [('seats_availability', '=', 'limited')]}"/>
-                                        </div>
-                                    </group>
-                                    <group>
-                                        <field name="auto_confirm" groups="base.group_no_one"/>
+                                        <field name="seats_availability" widget='radio'/>
+                                        <field name="seats_max" attrs="{'invisible': [('seats_availability', '=', 'unlimited')], 'required': [('seats_availability', '=', 'limited')]}"/>
                                     </group>
                                 </group>
+                                <field name="shift_ticket_ids" context="{'default_name': name}">
+                                    <tree string="Tickets" editable="bottom">
+                                        <field name="name"/>
+                                        <field name="product_id" context="{'shift_ok':1}" domain="[('shift_type_id','!=',False)]"/>
+                                        <field name="seats_max"/>
+                                        <field name="seats_reserved" readonly="1"/>
+                                        <field name="seats_unconfirmed" readonly="1"/>
+                                    </tree>
+                                </field>
                             </page>
                             <page string="Email Schedule" groups="event.group_email_scheduling">
                                 <group>

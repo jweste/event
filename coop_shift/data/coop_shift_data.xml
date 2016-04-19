@@ -7,4 +7,39 @@
             <field name="sequence">10</field>
         </record>
     </data>
+
+    <data noupdate="0">
+        <record id="shift_type" model="shift.type">
+            <field name="name">Generic Shifts</field>
+        </record>
+
+        <record id="product_product_shift_standard" model="product.product">
+            <field name="list_price">0.0</field>
+            <field name="shift_ok" eval="True"/>
+            <field name="sale_ok" eval="False"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="standard_price">0.0</field>
+            <field name="uom_id" ref="product.product_uom_unit"/>
+            <field name="uom_po_id" ref="product.product_uom_unit"/>
+            <field name="name">Standard Subscription</field>
+            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="type">service</field>
+            <field name="shift_type_id" ref="coop_shift.shift_type"/>
+        </record>
+
+        <record id="product_product_shift_ftop" model="product.product">
+            <field name="list_price">0.0</field>
+            <field name="shift_ok" eval="True"/>
+            <field name="sale_ok" eval="False"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="standard_price">0.0</field>
+            <field name="uom_id" ref="product.product_uom_unit"/>
+            <field name="uom_po_id" ref="product.product_uom_unit"/>
+            <field name="name">FTOP Subscription</field>
+            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="type">service</field>
+            <field name="shift_type_id" ref="coop_shift.shift_type"/>
+        </record>
+
+    </data>
 </odoo>

@@ -60,12 +60,34 @@ class ShiftShift(models.Model):
     seats_expected = fields.Integer(compute='_compute_seats_shift')
     auto_confirm = fields.Boolean(
         string='Confirmation not required', compute='_compute_auto_confirm')
+    shift_ticket_ids = fields.One2many(
+        'shift.ticket', 'shift_id', string='Shift Ticket',
+        default=lambda rec: rec._default_tickets(), copy=True)
 
     _sql_constraints = [(
         'template_date_uniq',
         'unique (shift_template_id, date_begin, company_id)',
         'The same template cannot be planned several time at the same date !'),
     ]
+
+    @api.model
+    def _default_tickets(self):
+        try:
+            product = self.env.ref('coop_shift.product_product_shift_standard')
+            product2 = self.env.ref('coop_shift.product_product_shift_ftop')
+            return [
+                {
+                    'name': _('Subscription'),
+                    'product_id': product.id,
+                    'price': 0,
+                },
+                {
+                    'name': _('FTOP'),
+                    'product_id': product2.id,
+                    'price': 0,
+                }]
+        except ValueError:
+            return self.env['shift.ticket']
 
     @api.one
     @api.constrains('seats_max', 'seats_available')

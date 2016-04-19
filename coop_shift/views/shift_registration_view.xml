@@ -16,6 +16,7 @@
                     <field name="name"/>
                     <field name="email"/>
                     <field name="shift_id" />
+                    <field name="event_ticket_id"/>
                     <field name="state"/>
                     <field name="message_needaction" invisible="1"/>
                     <button name="confirm_registration" string="Confirm Registration" states="draft" type="object" icon="gtk-apply"/>
@@ -48,6 +49,7 @@
                             </group>
                             <group string="Shift Information" name="shift">
                                 <field name="shift_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                                <field name="shift_ticket_id" domain="[('shift_id', '=', shift_id)]"/>
                                 <field name="date_open" groups="base.group_no_one"/>
                                 <field name="date_closed" groups="base.group_no_one"/>
                             </group>
@@ -111,6 +113,7 @@
                         <filter string="Status" domain="[]" context="{'group_by':'state'}"/>
                         <filter string="Registration Day" domain="[]" context="{'group_by': 'create_date:day'}"/>
                         <filter string="Registration Month" domain="[]" context="{'group_by': 'create_date:month'}"/>
+                        <filter string="Ticket Type" domain="[]" context="{'group_by':'shift_ticket_id'}"/>
                    </group>
                 </search>
             </field>
