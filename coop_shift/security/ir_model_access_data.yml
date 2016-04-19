@@ -94,3 +94,21 @@
     perm_read: true
     perm_write: false
     perm_unlink: false
+- 
+  !record {model: ir.model.access, id: ir_model_access_shift_template_ticket_manager}:
+    group_id: coop_shift.group_shift_manager
+    model_id: coop_shift.model_shift_template_ticket
+    name: shift_template_ticket manager
+    perm_create: true
+    perm_read: true
+    perm_write: true
+    perm_unlink: true
+- 
+  !record {model: ir.model.access, id: ir_model_access_shift_template_ticket_user}:
+    group_id: coop_shift.group_shift_user
+    model_id: coop_shift.model_shift_template_ticket
+    name: shift_template_ticket user
+    perm_create: false
+    perm_read: true
+    perm_write: false
+    perm_unlink: false
