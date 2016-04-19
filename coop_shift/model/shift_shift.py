@@ -77,7 +77,7 @@ class ShiftShift(models.Model):
             product2 = self.env.ref('coop_shift.product_product_shift_ftop')
             return [
                 {
-                    'name': _('Subscription'),
+                    'name': _('Standard'),
                     'product_id': product.id,
                     'price': 0,
                 },

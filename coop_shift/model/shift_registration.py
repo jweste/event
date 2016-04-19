@@ -39,7 +39,8 @@ class ShiftRegistration(models.Model):
     partner_id = fields.Many2one(
         required=True, default=lambda self: self.env.user.partner_id)
     user_id = fields.Many2one(related="shift_id.user_id")
-    shift_ticket_id = fields.Many2one('shift.ticket', 'Shift Ticket')
+    shift_ticket_id = fields.Many2one(
+        'shift.ticket', 'Shift Ticket', required=True)
 
     _sql_constraints = [(
         'shift_registration_uniq',

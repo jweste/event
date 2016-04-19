@@ -74,7 +74,7 @@ class ShiftTicket(models.Model):
                 'open': 'seats_reserved',
                 'done': 'seats_used',
             }
-            query = """ SELECT shift_ticket_id, state, count(event_id)
+            query = """ SELECT shift_ticket_id, state, count(shift_id)
                         FROM shift_registration
                         WHERE shift_ticket_id IN %s
                         AND state IN ('draft', 'open', 'done')

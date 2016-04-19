@@ -16,7 +16,7 @@
                     <field name="name"/>
                     <field name="email"/>
                     <field name="shift_id" />
-                    <field name="event_ticket_id"/>
+                    <field name="shift_ticket_id"/>
                     <field name="state"/>
                     <field name="message_needaction" invisible="1"/>
                     <button name="confirm_registration" string="Confirm Registration" states="draft" type="object" icon="gtk-apply"/>
