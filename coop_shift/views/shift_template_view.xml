@@ -98,13 +98,10 @@
                             <group name="header">
                                 <field name="updated_fields" invisible="1"/>
                                 <field name="address_id" context="{'show_address': 1}" options='{"always_reload": True}' invisible="1"/>
-                                <!-- <field name="organizer_id"/> -->
                                 <field name="company_id" groups="base.group_multi_company"/>
                                 <field name="user_id"/>
                                 <field name="week_number"/>
                                 <field name="shift_type_id"/>
-                                <!-- <field name="date_tz" /> -->
-                                <!-- <field name="auto_schedule"/> -->
                             </group>
                             <group name="datetime">
                                 <field name="start_date"/>
@@ -112,17 +109,6 @@
                                 <field name="duration" widget="float_time" groups="base.group_no_one"/>
                                 <field name="end_time" widget="float_time" readonly="1"/>
                             </group>
-
-                            <!-- avertissement si on veut modifier un shift lié à une récurrence
-                            possibilité de détacher cet événement
-                            pas de possibilité de faire "à partir de cette date"
-                            <group attrs="{'invisible': [('recurrency','==',False)]}" class="oe_edit_only ">
-                                <p class='alert alert-warning'> This shift is linked to a recurrence...<br/>
-                                    <button type="object" name="open_after_detach_shift"  string="Update only this instance"  help="Click here to update only this instance and not all recurrences. " class="oe_link"/>
-                                </p>
-                            </group> -->
-                            
-
                         </group>
                         <notebook>
                             <page name="registrations" string="Registrations">
@@ -138,9 +124,6 @@
                                             <field name="seats_max" attrs="{'invisible': [('seats_availability', '=', 'unlimited')], 'required': [('seats_availability', '=', 'limited')]}"/>
                                         </div>
                                     </group>
-                                    <!-- <group>
-                                        <field name="auto_confirm" groups="base.group_no_one"/>
-                                    </group> -->
                                 </group>
                                 <field name="shift_ticket_ids" context="{'default_name': name}">
                                     <tree string="Tickets" editable="bottom">

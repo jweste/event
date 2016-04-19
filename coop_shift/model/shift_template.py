@@ -55,9 +55,6 @@ class ShiftTemplate(models.Model):
         'res.company', string='Company', change_default=True,
         default=lambda self: self.env['res.company']._company_default_get(
             'shift.shift'))
-    # organizer_id = fields.Many2one(
-    #     'res.partner', string='Organizer',
-    #     default=lambda self: self.env.user.company_id.partner_id)
     shift_type_id = fields.Many2one(
         'shift.type', string='Category', required=False)
     week_number = fields.Selection(WEEK_NUMBERS, string='Week', required=True)
@@ -121,10 +118,6 @@ class ShiftTemplate(models.Model):
     duration = fields.Float('Duration (hours)', default=3.0)
     end_time = fields.Float(string='End Time')
     updated_fields = fields.Char('Updated Fields')
-
-    # auto_schedule = fields.Boolean('Auto Schedule')
-    # auto_confirm = fields.Boolean(
-    #     string='Confirmation not required', compute='_compute_auto_confirm')
 
     # RECURRENCE FIELD
     rrule_type = fields.Selection([
@@ -284,11 +277,6 @@ class ShiftTemplate(models.Model):
     @api.model
     def _tz_get(self):
         return [(x, x) for x in pytz.all_timezones]
-
-    # @api.one
-    # def _compute_auto_confirm(self):
-    #     self.auto_confirm = self.env['ir.values'].get_default(
-    #         'shift.config.settings', 'auto_confirmation')
 
     @api.onchange('duration', 'start_time')
     @api.multi
