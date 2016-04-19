@@ -95,6 +95,9 @@ class ShiftTemplate(models.Model):
         readonly=True, compute='_compute_seats')
     registration_ids = fields.One2many(
         'shift.template.registration', 'shift_template_id', string='Attendees')
+    shift_ticket_ids = fields.One2many(
+        'shift.template.ticket', 'shift_template_id', string='Shift Ticket',
+        default=lambda rec: rec._default_tickets(), copy=True)
     reply_to = fields.Char(
         'Reply-To Email',
         help="""The email address of the organizer is likely to be put here,
@@ -159,6 +162,25 @@ class ShiftTemplate(models.Model):
     final_date = fields.Date('Repeat Until')  # The last shift of a recurrence
     rrule = fields.Char(
         compute="_get_rulestring", store=True, string='Recurrent Rule',)
+
+    @api.model
+    def _default_tickets(self):
+        try:
+            product = self.env.ref('coop_shift.product_product_shift_standard')
+            product2 = self.env.ref('coop_shift.product_product_shift_ftop')
+            return [
+                {
+                    'name': _('Subscription'),
+                    'product_id': product.id,
+                    'price': 0,
+                },
+                {
+                    'name': _('FTOP'),
+                    'product_id': product2.id,
+                    'price': 0,
+                }]
+        except ValueError:
+            return self.env['shift.template.ticket']
 
     @api.multi
     @api.depends('seats_max', 'registration_ids.state')

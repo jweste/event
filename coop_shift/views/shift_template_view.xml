@@ -142,16 +142,15 @@
                                         <field name="auto_confirm" groups="base.group_no_one"/>
                                     </group> -->
                                 </group>
-                                <group>
-                                    <field name="registration_ids" nolabel="1" readonly="1">
-                                        <tree>
-                                            <field name="name"/>
-                                            <field name="phone"/>
-                                            <field name="email"/>
-                                            <field name="state"/>
-                                        </tree>
-                                    </field>
-                                </group>
+                                <field name="shift_ticket_ids" context="{'default_name': name}">
+                                    <tree string="Tickets" editable="bottom">
+                                        <field name="name"/>
+                                        <field name="product_id" context="{'shift_ok':1}" domain="[('shift_type_id','!=',False)]"/>
+                                        <field name="seats_max"/>
+                                        <field name="seats_reserved" readonly="1"/>
+                                        <field name="seats_unconfirmed" readonly="1"/>
+                                    </tree>
+                                </field>
                             </page>
                             <page string="Recurrence" groups="coop_shift.group_recurrency">
                                 <group>

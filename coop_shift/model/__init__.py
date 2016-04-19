@@ -29,6 +29,7 @@ from . import shift_template
 from . import shift_template_registration
 from . import shift_type
 from . import shift_ticket
+from . import shift_template_ticket
 from . import shift_mail_registration
 from . import res_partner
 from . import product

@@ -16,6 +16,7 @@
                     <field name="name"/>
                     <field name="email"/>
                     <field name="shift_template_id" />
+                    <field name="shift_ticket_id"/>
                     <field name="state"/>
                     <field name="message_needaction" invisible="1"/>
                     <button name="confirm_registration" string="Confirm Registration" states="draft" type="object" icon="gtk-apply"/>
@@ -48,6 +49,7 @@
                             </group>
                             <group string="Template Information" name="shift">
                                 <field name="shift_template_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                                <field name="shift_ticket_id" domain="[('shift_template_id', '=', shift_template_id)]"/>
                                 <field name="date_open" groups="base.group_no_one"/>
                                 <field name="date_closed" groups="base.group_no_one"/>
                             </group>
