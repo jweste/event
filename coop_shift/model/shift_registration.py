@@ -2,7 +2,7 @@
 ##############################################################################
 #
 #    Purchase - Computed Purchase Order Module for Odoo
-#    Copyright (C) 2016-Today Akretion (http://www.grap.coop)
+#    Copyright (C) 2016-Today: La Louve (<http://www.lalouve.net/>)
 #    @author Julien WESTE
 #    @author Sylvain LE GAL (https://twitter.com/legalsylvain)
 #
@@ -40,7 +40,7 @@ class ShiftRegistration(models.Model):
         required=True, default=lambda self: self.env.user.partner_id)
     user_id = fields.Many2one(related="shift_id.user_id")
     shift_ticket_id = fields.Many2one(
-        'shift.ticket', 'Shift Ticket', required=True)
+        'shift.ticket', 'Shift Ticket', required=True, ondelete="cascade")
 
     _sql_constraints = [(
         'shift_registration_uniq',

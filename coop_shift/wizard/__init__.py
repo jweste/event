@@ -2,7 +2,7 @@
 ##############################################################################
 #
 #    Purchase - Computed Purchase Order Module for Odoo
-#    Copyright (C) 2016-Today Akretion (http://www.grap.coop)
+#    Copyright (C) 2016-Today: La Louve (<http://www.lalouve.net/>)
 #    @author Julien WESTE
 #    @author Sylvain LE GAL (https://twitter.com/legalsylvain)
 #
