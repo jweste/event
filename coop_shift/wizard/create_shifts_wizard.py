@@ -94,7 +94,6 @@ class CreateShifts(models.TransientModel):
                     'seats_max': template.seats_max,
                     'seats_availability': template.seats_availability,
                     'seats_min': template.seats_min,
-                    'date_tz': template.date_tz,
                     'date_begin': date_begin,
                     'date_end': date_end,
                     'state': 'draft',

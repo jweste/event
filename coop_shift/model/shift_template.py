@@ -109,8 +109,6 @@ class ShiftTemplate(models.Model):
     description = fields.Html(
         string='Description', oldname='note', translate=True,
         readonly=False,)
-    date_tz = fields.Selection('_tz_get', string='Timezone',
-                               default=lambda self: self.env.user.tz)
     start_date = fields.Date(string='Start Date', required=True, help="""
         First date this shift will be scheduled""")
     start_time = fields.Float(string='Start Time', required=True,)
@@ -272,10 +270,6 @@ class ShiftTemplate(models.Model):
             'interval_type': 'after_sub',
             'template_id': self.env.ref('coop_shift.shift_subscription')
         })]
-
-    @api.model
-    def _tz_get(self):
-        return [(x, x) for x in pytz.all_timezones]
 
     @api.onchange('duration', 'start_time')
     @api.multi
