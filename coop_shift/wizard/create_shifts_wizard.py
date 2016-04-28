@@ -68,9 +68,6 @@ class CreateShifts(models.TransientModel):
             if wizard.date_from <= wizard.last_shift_date:
                 raise UserError(_(
                     "'From date' can't be before 'Last shift date'"))
-            shift_obj = self.env['shift.shift']
-            registration_obj = self.env['shift.registration']
-            ticket_obj = self.env['shift.ticket']
             template_id = self.env.context.get('active_id', False)
             if not template_id:
                 return
@@ -104,7 +101,7 @@ class CreateShifts(models.TransientModel):
                     'week_number': template.week_number,
                     'shift_ticket_ids': None,
                 }
-                shift_id = shift_obj.create(vals)
+                shift_id = self.env['shift.shift'].create(vals)
                 for ticket in template.shift_ticket_ids:
                     vals = {
                         'name': ticket.name,
@@ -114,7 +111,7 @@ class CreateShifts(models.TransientModel):
                         'deadline': ticket.deadline,
                         'seats_availability': ticket.seats_availability,
                     }
-                    ticket_id = ticket_obj.create(vals)
+                    ticket_id = self.env['shift.ticket'].create(vals)
 
                     for attendee in ticket.registration_ids:
                         if attendee.state == "cancel":
@@ -129,4 +126,4 @@ class CreateShifts(models.TransientModel):
                             'shift_id': shift_id.id,
                             'shift_ticket_id': ticket_id.id,
                         }
-                        registration_obj.create(vals)
+                        self.env['shift.registration'].create(vals)
