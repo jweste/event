@@ -61,8 +61,7 @@ class ShiftShift(models.Model):
     auto_confirm = fields.Boolean(
         string='Confirmation not required', compute='_compute_auto_confirm')
     event_ticket_ids = fields.One2many(
-        default=lambda rec: rec._default_tickets()
-        )
+        default=lambda rec: rec._default_tickets())
     shift_ticket_ids = fields.One2many(
         'shift.ticket', 'shift_id', string='Shift Ticket',
         default=lambda rec: rec._default_shift_tickets(), copy=True)

@@ -36,8 +36,7 @@ class ShiftTicket(models.Model):
     event_id = fields.Many2one(required=False)
     product_id = fields.Many2one(
         default=lambda self: self._default_product_id(),
-        domain=[("shift_type_id", "!=", False)],
-        )
+        domain=[("shift_type_id", "!=", False)],)
     registration_ids = fields.One2many(
         'shift.registration', 'shift_ticket_id', 'Registrations')
 

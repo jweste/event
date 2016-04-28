@@ -34,7 +34,7 @@ WEEK_NUMBERS = [
     (2, 'Week B'),
     (3, 'Week C'),
     (4, 'Week D')
-    ]
+]
 
 
 class ShiftTemplate(models.Model):
@@ -103,10 +103,9 @@ class ShiftTemplate(models.Model):
         address of your mail gateway if you use one.""")
     address_id = fields.Many2one(
         'res.partner', string='Location',
-        default=lambda self: self.env.user.company_id.partner_id,
-        )
+        default=lambda self: self.env.user.company_id.partner_id,)
     country_id = fields.Many2one(
-        'res.country', 'Country',  related='address_id.country_id', store=True)
+        'res.country', 'Country', related='address_id.country_id', store=True)
     description = fields.Html(
         string='Description', oldname='note', translate=True,
         readonly=False,)
