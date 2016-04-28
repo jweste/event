@@ -83,6 +83,7 @@ class CreateShifts(models.TransientModel):
                 date_end = datetime.strftime(
                     rec_date + timedelta(hours=template.end_time),
                     "%Y-%m-%d %H:%M:%S")
+                rec_date = datetime.strftime(rec_date, "%Y-%m-%d")
                 vals = {
                     'shift_template_id': template.id,
                     'name': template.name,
@@ -114,16 +115,16 @@ class CreateShifts(models.TransientModel):
                     ticket_id = self.env['shift.ticket'].create(vals)
 
                     for attendee in ticket.registration_ids:
-                        if attendee.state == "cancel":
-                            pass
-                        vals = {
-                            'partner_id': attendee.partner_id.id,
-                            'user_id': template.user_id.id,
-                            'state': attendee.state,
-                            'email': attendee.email,
-                            'phone': attendee.phone,
-                            'name': attendee.name,
-                            'shift_id': shift_id.id,
-                            'shift_ticket_id': ticket_id.id,
-                        }
-                        self.env['shift.registration'].create(vals)
+                        state = attendee._get_state(rec_date)
+                        if state:
+                            vals = {
+                                'partner_id': attendee.partner_id.id,
+                                'user_id': template.user_id.id,
+                                'state': state,
+                                'email': attendee.email,
+                                'phone': attendee.phone,
+                                'name': attendee.name,
+                                'shift_id': shift_id.id,
+                                'shift_ticket_id': ticket_id.id,
+                            }
+                            self.env['shift.registration'].create(vals)

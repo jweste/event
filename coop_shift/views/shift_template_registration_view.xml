@@ -17,11 +17,8 @@
                     <field name="email"/>
                     <field name="shift_template_id" />
                     <field name="shift_ticket_id"/>
-                    <field name="state"/>
                     <field name="message_needaction" invisible="1"/>
-                    <button name="confirm_registration" string="Confirm Registration" states="draft" type="object" icon="gtk-apply"/>
-                    <button name="button_reg_close" string="Attended the Template" states="open" type="object" icon="gtk-jump-to"/>
-                    <button name="button_reg_cancel" string="Cancel Registration" states="draft,open" type="object" icon="gtk-cancel"/>
+                    <field name="state" invisible="1"/>
                 </tree>
             </field>
         </record>
@@ -32,27 +29,30 @@
             <field name="arch" type="xml">
                 <form string="Template Registration">
                     <header>
-                        <button name="action_send_badge_email" string="Send by Email" type="object" states="open,done" class="oe_highlight"/>
-                        <button name="confirm_registration" string="Confirm" states="draft" type="object" class="oe_highlight"/>
-                        <button name="button_reg_close" string="Attended" states="open" type="object" class="oe_highlight"/>
-                        <button string="Set To Unconfirmed" name="do_draft" states="cancel,done" type="object" />
-                        <button name="button_reg_cancel" string="Cancel Registration" states="draft,open" type="object"/>
                         <field name="state" nolabel="1" colspan="2" widget="statusbar" statusbar_visible="draft,open,done"/>
                     </header>
                     <sheet string="Registration">
                         <group>
                             <group string="Attendee" name="attendee">
-                                <field name="partner_id" attrs="{'readonly':[('state', '!=', 'draft')]}" groups="coop_shift.group_shift_manager"/>
+                                <field name="partner_id" groups="coop_shift.group_shift_manager"/>
                                 <field name="name"/>
                                 <field name="phone"/>
                                 <field name="email"/>
                             </group>
                             <group string="Template Information" name="shift">
-                                <field name="shift_template_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                                <field name="shift_template_id" />
                                 <field name="shift_ticket_id" domain="[('shift_template_id', '=', shift_template_id)]"/>
                                 <field name="date_open" groups="base.group_no_one"/>
-                                <field name="date_closed" groups="base.group_no_one"/>
                             </group>
+                        </group>
+                        <group name="lines" string="Registration dates">
+                            <field name="line_ids" nolabel="1">
+                                <tree editable="bottom">
+                                    <field name="date_begin"/>
+                                    <field name="date_end"/>
+                                    <field name="state"/>
+                                </tree>
+                            </field>
                         </group>
                     </sheet>
                     <div class="oe_chatter">
@@ -103,14 +103,12 @@
                     <field name="id" string="Registration ID"/>
                     <field name="name" string="Participant" filter_domain="['|', '|', ('name', 'ilike', self), ('email', 'ilike', self), ('origin', 'ilike', self)]"/>
                     <filter string="Unread Messages" name="message_needaction" domain="[('message_needaction','=',True)]"/>
-                    <filter string="Expected" name="expected" domain="[('state', 'in', ['draft', 'open', 'done'])]"/>
                     <separator/>
                     <field name="shift_template_id"/>
                     <field name="partner_id"/>
                     <group expand="0" string="Group By">
                         <filter string="Partner" domain="[]" context="{'group_by':'partner_id'}"/>
                         <filter string="Template" name="group_template" domain="[]" context="{'group_by':'shift_template_id'}"/>
-                        <filter string="Status" domain="[]" context="{'group_by':'state'}"/>
                         <filter string="Registration Day" domain="[]" context="{'group_by': 'create_date:day'}"/>
                         <filter string="Registration Month" domain="[]" context="{'group_by': 'create_date:month'}"/>
                    </group>
@@ -124,7 +122,7 @@
             <field name="view_type">form</field>
             <field name="name">Attendees</field>
             <field name="view_mode">tree,form,calendar,graph</field>
-            <field name="context">{'search_default_shift_template_id': active_id, 'default_shift_template_id': active_id, 'search_default_expected': True}</field>
+            <field name="context">{'search_default_shift_template_id': active_id, 'default_shift_template_id': active_id}</field>
         </record>
 
         <act_window

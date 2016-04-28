@@ -24,6 +24,18 @@
 from openerp import models, fields, api, _
 from openerp.exceptions import UserError
 
+STATES = [
+    ('cancel', 'Cancelled'),
+    ('draft', 'Unconfirmed'),
+    ('open', 'Confirmed'),
+    ('done', 'Attended'),
+    ('absent', 'Absent'),
+    ('waiting', 'Waiting'),
+    ('excused', 'Excused'),
+    ('replaced', 'Replaced'),
+    ('replacing', 'Replacing'),
+]
+
 
 class ShiftRegistration(models.Model):
     _inherit = 'event.registration'
@@ -41,6 +53,7 @@ class ShiftRegistration(models.Model):
     user_id = fields.Many2one(related="shift_id.user_id")
     shift_ticket_id = fields.Many2one(
         'shift.ticket', 'Shift Ticket', required=True, ondelete="cascade")
+    state = fields.Selection(STATES)
 
     _sql_constraints = [(
         'shift_registration_uniq',

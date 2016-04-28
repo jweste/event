@@ -21,7 +21,7 @@
 #
 ##############################################################################
 
-from openerp import models, fields
+from openerp import models, fields, api
 
 
 class ShiftTemplateRegistration(models.Model):
@@ -40,9 +40,20 @@ class ShiftTemplateRegistration(models.Model):
     user_id = fields.Many2one(related="shift_template_id.user_id")
     shift_ticket_id = fields.Many2one(
         'shift.template.ticket', 'Shift Ticket', required=True)
+    line_ids = fields.One2many(
+        'shift.template.registration.line', 'registration_id', string='Lines')
+    state = fields.Selection()
 
     _sql_constraints = [(
         'template_registration_uniq',
         'unique (shift_template_id, partner_id)',
         'This partner is already registered on this Shift Template !'),
     ]
+
+    @api.model
+    def _get_state(self, date_check):
+        for line in self.line_ids:
+            if (not line.date_begin or date_check > line.date_begin) and\
+                    (not line.date_end or date_check < line.date_end):
+                return line.state
+        return False

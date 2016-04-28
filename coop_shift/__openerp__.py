@@ -23,7 +23,7 @@
 
 {
     'name': 'Coop Shift',
-    'version': '9.0.1',
+    'version': '9.0.5',
     'category': 'Tools',
     'description': """
 This module copys the event.event object to create a shift.shift object. This
