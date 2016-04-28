@@ -21,7 +21,6 @@
 #
 ##############################################################################
 
-import pytz
 import re
 from openerp import models, fields, api, _
 from datetime import datetime
