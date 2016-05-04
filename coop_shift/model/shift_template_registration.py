@@ -21,7 +21,8 @@
 #
 ##############################################################################
 
-from openerp import models, fields, api
+from openerp import models, fields, api, _
+from openerp.exceptions import ValidationError
 
 
 class ShiftTemplateRegistration(models.Model):
@@ -72,3 +73,39 @@ class ShiftTemplateRegistration(models.Model):
                     (not line.date_end or date_check < line.date_end):
                 return line.state
         return False
+
+    @api.one
+    @api.constrains('line_ids')
+    def _check_dates(self):
+        for reg in self:
+            ok = True
+            for line in reg.line_ids:
+                if line.date_begin and line.date_end and\
+                        line.date_begin > line.date_end:
+                    raise ValidationError(_(
+                        """Begin date is greater than End date:"""
+                        """ \n begin: %s    end: %s    state: %s;""" % (
+                            line.date_begin, line.date_end, line.state)))
+                for line2 in reg.line_ids:
+                    if line2 == line:
+                        continue
+                    b1 = line.date_begin or min(
+                        line.date_end, line2.date_begin, line2.date_end)
+                    b2 = line2.date_begin or min(
+                        line.date_begin, line.date_end, line2.date_end)
+                    e1 = line.date_end or max(
+                        line.date_begin, line2.date_begin, line2.date_end)
+                    e2 = line2.date_end or max(
+                        line.date_begin, line.date_end, line2.date_begin)
+                    if b1 <= e2 and b2 <= e1:
+                        ok = False
+                        break
+                if not ok:
+                    break
+            if not ok:
+                raise ValidationError(_(
+                    """These dates overlap:"""
+                    """ \n - Line1: begin: %s    end: %s    state: %s;"""
+                    """ \n - Line2: begin: %s    end: %s    state: %s;""" % (
+                        line.date_begin, line.date_end, line.state,
+                        line2.date_begin, line2.date_end, line2.state)))

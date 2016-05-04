@@ -21,8 +21,7 @@
 #
 ##############################################################################
 
-from openerp import models, fields, api, _
-from openerp.exceptions import ValidationError
+from openerp import models, fields, api
 
 STATES = [
     ('cancel', 'Cancelled'),
@@ -50,15 +49,14 @@ class ShiftTemplateRegistrationLine(models.Model):
 
     @api.model
     def create(self, vals):
-        self._check_dates()
+        begin = vals.get('date_begin', False)
+        end = vals.get('date_end', False)
         res = super(ShiftTemplateRegistrationLine, self).create(vals)
 
         st_reg = self.env['shift.template.registration'].browse(
             vals['registration_id'])
         partner = st_reg.partner_id
 
-        begin = vals['date_begin']
-        end = vals['date_end']
         shifts = st_reg.shift_template_id.shift_ids.filtered(
             lambda s, b=begin, e=end: (s.date_begin > b or not b) and
             (s.date_end < e or not e))
@@ -82,7 +80,6 @@ class ShiftTemplateRegistrationLine(models.Model):
     @api.multi
     def write(self, vals):
         sr_obj = self.env['shift.registration']
-        self._check_dates()
         res = super(ShiftTemplateRegistrationLine, self).write(vals)
         st_reg = self.registration_id
         partner = st_reg.partner_id
@@ -132,40 +129,3 @@ class ShiftTemplateRegistrationLine(models.Model):
                     if r.partner_id == partner:
                         r.unlink()
         return super(ShiftTemplateRegistrationLine, self).unlink()
-
-    @api.multi
-    @api.constrains()
-    def _check_dates(self):
-        for strl in self:
-            ok = True
-            registration = strl.registration_id
-            for line in registration.line_ids:
-                if line.date_begin and line.date_end and\
-                        line.date_begin > line.date_end:
-                    raise ValidationError(_(
-                        """Begin date is greater than End date:"""
-                        """ \n begin: %s    end: %s    state: %s;""" % (
-                            line.date_begin, line.date_end, line.state)))
-                for line2 in registration.line_ids:
-                    if line2 == line:
-                        continue
-                    b1 = line.date_begin or min(
-                        line.date_end, line2.date_begin, line2.date_end)
-                    b2 = line2.date_begin or min(
-                        line.date_begin, line.date_end, line2.date_end)
-                    e1 = line.date_end or max(
-                        line.date_begin, line2.date_begin, line2.date_end)
-                    e2 = line2.date_end or max(
-                        line.date_begin, line.date_end, line2.date_begin)
-                    if b1 <= e2 and b2 <= e1:
-                        ok = False
-                        break
-                if not ok:
-                    break
-            if not ok:
-                raise ValidationError(_(
-                    """These dates overlap:"""
-                    """ \n - Line1: begin: %s    end: %s    state: %s;"""
-                    """ \n - Line2: begin: %s    end: %s    state: %s;""" % (
-                        line.date_begin, line.date_end, line.state,
-                        line2.date_begin, line2.date_end, line2.state)))
