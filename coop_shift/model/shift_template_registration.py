@@ -51,6 +51,10 @@ class ShiftTemplateRegistration(models.Model):
     ]
 
     @api.model
+    def _get_default_ticket(self):
+        return self.env['shift.template'].browse(self.env.context[
+            'active_id']).shift_ticket_ids[0] or False
+
     def _get_state(self, date_check):
         for line in self.line_ids:
             if (not line.date_begin or date_check > line.date_begin) and\
