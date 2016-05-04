@@ -147,7 +147,7 @@ class ShiftShift(models.Model):
     @api.multi
     def write(self, vals):
         for shift in self:
-            if shift.state != "draft":
+            if shift.state == "done":
                 raise UserError(_(
                     'You can only repercute changer on draft shifts.'))
         return super(ShiftShift, self).write(vals)
