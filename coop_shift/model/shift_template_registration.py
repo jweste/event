@@ -39,7 +39,8 @@ class ShiftTemplateRegistration(models.Model):
         required=True, default=lambda self: self.env.user.partner_id)
     user_id = fields.Many2one(related="shift_template_id.user_id")
     shift_ticket_id = fields.Many2one(
-        'shift.template.ticket', 'Shift Ticket', required=True)
+        'shift.template.ticket', 'Shift Ticket', required=True,
+        default=lambda rec: rec._get_default_ticket(), copy=True)
     line_ids = fields.One2many(
         'shift.template.registration.line', 'registration_id', string='Lines')
     state = fields.Selection()
