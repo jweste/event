@@ -42,7 +42,8 @@ class ShiftTemplateRegistration(models.Model):
         'shift.template.ticket', 'Shift Ticket', required=True,
         default=lambda rec: rec._get_default_ticket(), copy=True)
     line_ids = fields.One2many(
-        'shift.template.registration.line', 'registration_id', string='Lines')
+        'shift.template.registration.line', 'registration_id', string='Lines',
+        default=lambda rec: rec._default_lines(), copy=True)
     state = fields.Selection()
 
     _sql_constraints = [(
@@ -56,6 +57,15 @@ class ShiftTemplateRegistration(models.Model):
         return self.env['shift.template'].browse(self.env.context[
             'active_id']).shift_ticket_ids[0] or False
 
+    @api.model
+    def _default_lines(self):
+        return [
+            {
+                'state': 'open',
+                'date_begin': fields.Datetime.now(),
+            }]
+
+    @api.model
     def _get_state(self, date_check):
         for line in self.line_ids:
             if (not line.date_begin or date_check > line.date_begin) and\
