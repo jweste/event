@@ -46,12 +46,14 @@ class ShiftTemplateRegistrationLine(models.Model):
     date_begin = fields.Date("Begin Date")
     date_end = fields.Date("End Date")
     state = fields.Selection(STATES, string="State", default="open")
+    shift_registration_ids = fields.One2many(
+        'shift.registration', 'tmpl_reg_line_id',
+        'Registrations',)
 
     @api.model
     def create(self, vals):
         begin = vals.get('date_begin', False)
         end = vals.get('date_end', False)
-        res = super(ShiftTemplateRegistrationLine, self).create(vals)
 
         st_reg = self.env['shift.template.registration'].browse(
             vals['registration_id'])
@@ -59,14 +61,14 @@ class ShiftTemplateRegistrationLine(models.Model):
 
         shifts = st_reg.shift_template_id.shift_ids.filtered(
             lambda s, b=begin, e=end: (s.date_begin > b or not b) and
-            (s.date_end < e or not e))
+            (s.date_end < e or not e) and (s.state != 'done'))
 
         v = {
             'partner_id': partner.id,
             'state': vals['state']
         }
 
-        sr_obj = self.env['shift.registration']
+        created_registrations = []
         for shift in shifts:
             ticket_id = shift.shift_ticket_ids.filtered(
                 lambda t: t.product_id == st_reg.shift_ticket_id.product_id)[0]
@@ -74,10 +76,11 @@ class ShiftTemplateRegistrationLine(models.Model):
                 'shift_id': shift.id,
                 'shift_ticket_id': ticket_id.id,
             })
-            sr_obj.create(values)
-        return res
+            created_registrations.append((0, 0, values))
+        vals['shift_registration_ids'] = created_registrations
+        return super(ShiftTemplateRegistrationLine, self).create(vals)
 
-    @api.multi
+    @api.one
     def write(self, vals):
         sr_obj = self.env['shift.registration']
         res = super(ShiftTemplateRegistrationLine, self).write(vals)
@@ -87,45 +90,54 @@ class ShiftTemplateRegistrationLine(models.Model):
         state = vals.get('state', self.state)
         begin = vals.get('date_begin', self.date_begin)
         end = vals.get('date_end', self.date_end)
-        # for shifts within dates: update registration if exists, or create it
+
+        # for linked registrations
+        for sr in self.shift_registration_ids:
+            shift = sr.shift_id
+            # if shift is done, pass
+            if shift.state == "done":
+                continue
+            # if dates ok, just update state
+            if (shift.date_begin > begin or not begin) and\
+                    (shift.date_end < end or not end):
+                sr.state = state
+            # if dates not ok, unlink the shift_registration
+            else:
+                sr.unlink()
+
+        # for shifts within dates: if partner has no registration, create it
         shifts = st_reg.shift_template_id.shift_ids.filtered(
             lambda s, b=begin, e=end: (s.date_begin > b or not b) and
-            (s.date_end < e or not e))
+            (s.date_end < e or not e) and (s.state != 'done'))
         for shift in shifts:
-            found = False
-            for r in shift.registration_ids:
-                if r.partner_id == partner:
-                    r.state = state
+            found = partner_found = False
+            for registration in shift.registration_ids:
+                if registration.partner_id == partner:
+                    partner_found = registration
+                if registration.tmpl_reg_line_id == self:
                     found = True
+                    break
             if not found:
-                ticket_id = shift.shift_ticket_ids.filtered(
-                    lambda t: t.product_id ==
-                    st_reg.shift_ticket_id.product_id)[0]
-                values = {
-                    'partner_id': partner.id,
-                    'state': state,
-                    'shift_id': shift.id,
-                    'shift_ticket_id': ticket_id.id,
-                }
-                sr_obj.create(values)
-
-        # for shifts not within dates: delete registration if exists
-        shifts = st_reg.shift_template_id.shift_ids.filtered(
-            lambda s, b=begin, e=end: (b and s.date_begin < b) or
-            (e and s.date_end > e))
-        for shift in shifts:
-            for r in shift.registration_ids:
-                if r.partner_id == partner:
-                    r.unlink()
-
+                if partner_found:
+                    partner_found.tmpl_reg_line_id = self
+                    partner_found.state = state
+                else:
+                    ticket_id = shift.shift_ticket_ids.filtered(
+                        lambda t: t.product_id ==
+                        st_reg.shift_ticket_id.product_id)[0]
+                    values = {
+                        'partner_id': partner.id,
+                        'state': state,
+                        'shift_id': shift.id,
+                        'shift_ticket_id': ticket_id.id,
+                        'tmpl_reg_line_id': self.id,
+                    }
+                    sr_obj.create(values)
         return res
 
     @api.multi
     def unlink(self):
         for strl in self:
-            partner = strl.registration_id.partner_id
-            for shift in strl.registration_id.shift_template_id.shift_ids:
-                for r in shift.registration_ids:
-                    if r.partner_id == partner:
-                        r.unlink()
+            for reg in strl.shift_registration_ids:
+                reg.unlink()
         return super(ShiftTemplateRegistrationLine, self).unlink()

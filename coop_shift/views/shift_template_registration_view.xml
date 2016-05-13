@@ -51,6 +51,7 @@
                                     <field name="date_begin"/>
                                     <field name="date_end"/>
                                     <field name="state"/>
+                                    <field name="shift_registration_ids" groups="base.group_no_one"/>
                                 </tree>
                             </field>
                         </group>

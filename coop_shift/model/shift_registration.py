@@ -54,6 +54,8 @@ class ShiftRegistration(models.Model):
     shift_ticket_id = fields.Many2one(
         'shift.ticket', 'Shift Ticket', required=True, ondelete="cascade")
     state = fields.Selection(STATES)
+    tmpl_reg_line_id = fields.Many2one(
+        'shift.template.registration.line', "Template Registration Line")
 
     _sql_constraints = [(
         'shift_registration_uniq',

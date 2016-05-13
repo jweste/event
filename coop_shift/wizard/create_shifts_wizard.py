@@ -115,7 +115,7 @@ class CreateShifts(models.TransientModel):
                     ticket_id = self.env['shift.ticket'].create(vals)
 
                     for attendee in ticket.registration_ids:
-                        state = attendee._get_state(rec_date)
+                        state, strl_id = attendee._get_state(rec_date)
                         if state:
                             vals = {
                                 'partner_id': attendee.partner_id.id,
@@ -126,5 +126,6 @@ class CreateShifts(models.TransientModel):
                                 'name': attendee.name,
                                 'shift_id': shift_id.id,
                                 'shift_ticket_id': ticket_id.id,
+                                'tmpl_reg_line_id': strl_id,
                             }
                             self.env['shift.registration'].create(vals)

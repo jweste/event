@@ -71,8 +71,8 @@ class ShiftTemplateRegistration(models.Model):
         for line in self.line_ids:
             if (not line.date_begin or date_check > line.date_begin) and\
                     (not line.date_end or date_check < line.date_end):
-                return line.state
-        return False
+                return line.state, line.id
+        return False, False
 
     @api.one
     @api.constrains('line_ids')
