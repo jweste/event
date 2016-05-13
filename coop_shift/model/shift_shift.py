@@ -152,13 +152,6 @@ class ShiftShift(models.Model):
                     'You can only repercute changes on draft shifts.'))
         return super(ShiftShift, self).write(vals)
 
-    @api.multi
-    def create(self, vals):
-        for shift in self:
-            if vals.get('event_ticket_ids', False):
-                del vals['event_ticket_ids']
-        return super(ShiftShift, self).create(vals)
-
     @api.onchange('shift_template_id')
     def _onchange_template_id(self):
         if self.shift_template_id:
