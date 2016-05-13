@@ -51,6 +51,7 @@ Copyright, Author and Licence :
     'data': [
         'wizard/create_shifts_wizard_view.xml',
         'wizard/update_shifts_wizard_view.xml',
+        'wizard/add_template_registration_view.xml',
         'data/coop_shift_data.xml',
         'data/email_template_data.xml',
         'security/shift_security.xml',
