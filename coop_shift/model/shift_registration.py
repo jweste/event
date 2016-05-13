@@ -56,6 +56,8 @@ class ShiftRegistration(models.Model):
     state = fields.Selection(STATES)
     tmpl_reg_line_id = fields.Many2one(
         'shift.template.registration.line', "Template Registration Line")
+    date_begin = fields.Datetime(related="shift_id.date_begin")
+    date_end = fields.Datetime(related="shift_id.date_end")
 
     _sql_constraints = [(
         'shift_registration_uniq',

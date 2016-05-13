@@ -11,15 +11,29 @@
             <field name="arch" type="xml">
                 <page name="sales_purchases" position="after">
                     <page name="shifts" string="Shifts">
-                        <field name="template_ids">
-                            <tree>
-                                <field name="name"/>
-                                <field name="user_id"/>
-                                <field name="start_time"/>
-                                <field name="end_time"/>
-                            </tree>
-                        </field>
-                        <field name="registration_ids" readonly="1"/>
+                        <group string="Template Registrations">
+                            <field name="tmpl_reg_line_ids" nolabel="1">
+                                <tree colors="blue:is_current">
+                                    <field name="shift_template_id"/>
+                                    <field name="shift_ticket_id"/>
+                                    <field name="date_begin"/>
+                                    <field name="date_end"/>
+                                    <field name="state"/>
+                                    <field name="is_current" invisible="1"/>
+                                </tree>
+                            </field>
+                        </group>
+                        <group string="Shift Registrations">
+                            <field name="registration_ids" readonly="1" nolabel="1">
+                                <tree>
+                                    <field name="shift_id"/>
+                                    <field name="shift_ticket_id"/>
+                                    <field name="date_begin"/>
+                                    <field name="date_end"/>
+                                    <field name="state"/>
+                                </tree>
+                            </field>
+                        </group>
                     </page>
                 </page>
             </field>

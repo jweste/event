@@ -27,8 +27,8 @@ from openerp import models, fields
 class ResPartner(models.Model):
     _inherit = 'res.partner'
 
-    template_ids = fields.Many2many(
-        comodel_name='shift.template', relation='shift_template_partner_rel',
-        column1="partner_id", column2="template_id", string='Registrations')
     registration_ids = fields.One2many(
         'shift.registration', "partner_id", 'Registrations')
+    tmpl_reg_line_ids = fields.One2many(
+        'shift.template.registration.line', "partner_id",
+        'Template Registrations')
