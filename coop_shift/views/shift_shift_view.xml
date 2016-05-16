@@ -125,7 +125,6 @@
             <field name="arch" type="xml">
                 <kanban class="o_shift_kanban_view">
                     <field name="user_id"/>
-                    <field name="country_id"/>
                     <field name="date_begin"/>
                     <field name="date_end"/>
                     <field name="seats_unconfirmed"/>
