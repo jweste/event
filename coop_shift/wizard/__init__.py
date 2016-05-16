@@ -24,3 +24,4 @@
 from . import create_shifts_wizard
 from . import update_shifts_wizard
 from . import add_template_registration
+from . import replace_registration

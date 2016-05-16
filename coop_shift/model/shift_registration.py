@@ -71,3 +71,21 @@ class ShiftRegistration(models.Model):
         if self.shift_ticket_id.seats_max and\
                 self.shift_ticket_id.seats_available < 0:
             raise UserError(_('No more available seats for this ticket'))
+
+    @api.one
+    def button_reg_absent(self):
+        """ Mark as Absent """
+        if self.event_id.date_begin <= fields.Datetime.now():
+            self.state = 'absent'
+        else:
+            raise UserError(_("You must wait for the starting day of the shift\
+                to do this action."))
+
+    @api.one
+    def button_reg_excused(self):
+        """ Mark as Excused """
+        if self.event_id.date_begin <= fields.Datetime.now():
+            self.state = 'excused'
+        else:
+            raise UserError(_("You must wait for the starting day of the shift\
+                to do this action."))

@@ -124,12 +124,13 @@ class ShiftShift(models.Model):
             state_field = {
                 'draft': 'seats_unconfirmed',
                 'open': 'seats_reserved',
+                'replacing': 'seats_reserved',
                 'done': 'seats_used',
             }
             query = """ SELECT shift_id, state, count(shift_id)
                         FROM shift_registration
                         WHERE shift_id IN %s
-                        AND state IN ('draft', 'open', 'done')
+                        AND state IN ('draft', 'open', 'done', 'replacing')
                         GROUP BY shift_id, state
                     """
             self._cr.execute(query, (tuple(self.ids),))

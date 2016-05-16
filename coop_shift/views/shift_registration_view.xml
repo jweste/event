@@ -4,6 +4,15 @@
 <!-- ********************************************************************** -->
 <openerp>
     <data>
+        <record id="action_replace_registration" model="ir.actions.act_window">
+            <field name="name">Replace Registration</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">replace.registration.wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="view_id" ref="view_replace_registration_wizard_form"/>
+        </record>
 
         <!-- SHIFT.REGISTRATION VIEWS -->
         <record model="ir.ui.view" id="view_shift_registration_tree">
@@ -22,6 +31,9 @@
                     <button name="confirm_registration" string="Confirm Registration" states="draft" type="object" icon="gtk-apply"/>
                     <button name="button_reg_close" string="Attended the Shift" states="open" type="object" icon="gtk-jump-to"/>
                     <button name="button_reg_cancel" string="Cancel Registration" states="draft,open" type="object" icon="gtk-cancel"/>
+                    <button name="button_reg_absent" string="Absent" states="draft,open" type="object" icon="stock_person"/>
+                    <button name="button_reg_excused" string="Excused" states="draft,open" type="object" icon="terp-face-plain"/>
+                    <button name="%(coop_shift.action_replace_registration)d" type="action" icon="terp-partner" string="Replace Member" states="draft,open"/>
                 </tree>
             </field>
         </record>
@@ -33,11 +45,15 @@
                 <form string="Shift Registration">
                     <header>
                         <button name="action_send_badge_email" string="Send by Email" type="object" states="open,done" class="oe_highlight"/>
-                        <button name="confirm_registration" string="Confirm" states="draft" type="object" class="oe_highlight"/>
-                        <button name="button_reg_close" string="Attended" states="open" type="object" class="oe_highlight"/>
-                        <button string="Set To Unconfirmed" name="do_draft" states="cancel,done" type="object" />
-                        <button name="button_reg_cancel" string="Cancel Registration" states="draft,open" type="object"/>
-                        <field name="state" nolabel="1" colspan="2" widget="statusbar" statusbar_visible="draft,open,done"/>
+                        <button name="confirm_registration" string="Confirm" states="draft" type="object" class="oe_highlight" icon="gtk-apply"/>
+                        <button name="button_reg_close" string="Attended" states="open" type="object" class="oe_highlight" icon="gtk-jump-to"/>
+                        <button string="Set To Unconfirmed" name="do_draft" states="cancel,done,absent,excused,replaced,replacing" type="object" />
+                        <button name="button_reg_cancel" string="Cancel Registration" states="draft,open" type="object" icon="gtk-cancel"/>
+                        <button name="button_reg_absent" string="Absent" states="draft,open" type="object" icon="stock_person"/>
+                        <button name="button_reg_excused" string="Excused" states="draft,open" type="object" icon="terp-face-plain"/>
+                        <button name="%(coop_shift.action_replace_registration)d" type="action" icon="terp-partner" string="Replace Member"/>
+                        <field name="state" nolabel="1" colspan="2" widget="statusbar" statusbar_visible="draft,open,done" attrs="{'invisible':[('state', 'in', ['absent','excused','replaced','replacing'])]}"/>
+                        <field name="state" nolabel="1" colspan="2" widget="statusbar" statusbar_visible="draft,open,excused,absent,done" attrs="{'invisible':[('state', 'not in', ['absent','excused','replaced','replacing'])]}"/>
                     </header>
                     <sheet string="Registration">
                         <group>
@@ -103,7 +119,7 @@
                     <field name="id" string="Registration ID"/>
                     <field name="name" string="Participant" filter_domain="['|', '|', ('name', 'ilike', self), ('email', 'ilike', self), ('origin', 'ilike', self)]"/>
                     <filter string="Unread Messages" name="message_needaction" domain="[('message_needaction','=',True)]"/>
-                    <filter string="Expected" name="expected" domain="[('state', 'in', ['draft', 'open', 'done'])]"/>
+                    <filter string="Expected" name="expected" domain="[('state', 'in', ['draft', 'open', 'done', 'replacing'])]"/>
                     <separator/>
                     <field name="shift_id"/>
                     <field name="partner_id"/>
