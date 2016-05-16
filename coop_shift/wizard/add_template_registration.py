@@ -58,7 +58,7 @@ class AddTemplateRegistration(models.TransientModel):
 
         for wizard in self:
             values = {
-                'line_ids': [(0, 0,  {
+                'line_ids': [(0, 0, {
                     'date_begin': wizard.date_begin,
                     'date_end': wizard.date_end,
                     'state': wizard.state,
