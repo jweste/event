@@ -89,7 +89,20 @@ class ShiftTemplateRegistrationLine(models.Model):
         created_registrations = []
         for shift in shifts:
             ticket_id = shift.shift_ticket_ids.filtered(
-                lambda t: t.product_id == st_reg.shift_ticket_id.product_id)[0]
+                lambda t: t.product_id == st_reg.shift_ticket_id.product_id)
+            if ticket_id:
+                ticket_id = ticket_id[0]
+            else:
+                shift.write({
+                    'shift_ticket_ids': [(0, 0, {
+                        'name': st_reg.shift_ticket_id.name,
+                        'product_id': st_reg.shift_ticket_id.product_id.id,
+                        'seats_max': st_reg.shift_ticket_id.seats_max,
+                    })]
+                })
+                ticket_id = shift.shift_ticket_ids.filtered(
+                    lambda t: t.product_id ==
+                    st_reg.shift_ticket_id.product_id)[0]
             values = dict(v, **{
                 'shift_id': shift.id,
                 'shift_ticket_id': ticket_id.id,
