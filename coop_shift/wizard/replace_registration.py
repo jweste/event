@@ -34,7 +34,7 @@ class ReplaceRegistration(models.TransientModel):
 
     registration_id = fields.Many2one(
         'shift.registration', "Registration", default=_get_registration_id,
-        required=True)
+        required=True, ondelete="cascade")
     shift_id = fields.Many2one(
         related='registration_id.shift_id',
         readonly=True)
@@ -54,10 +54,13 @@ class ReplaceRegistration(models.TransientModel):
 
     @api.one
     def replace_member(self):
-        self.registration_id.state = "replaced"
-        self.registration_id.copy({
+        new_reg_id = self.registration_id.copy({
             'partner_id': self.new_partner_id.id,
-            'state': 'replacing'}, )
+            'state': 'replacing',
+            'replaced_reg_id': self.registration_id.id,
+            'tmpl_reg_line_id': False, }, )
+        self.registration_id.state = "replaced"
+        self.replacing_reg_id = new_reg_id.id
         return {
             'type': 'ir.actions.client',
             'tag': 'reload',
