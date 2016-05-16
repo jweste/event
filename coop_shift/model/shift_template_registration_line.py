@@ -39,6 +39,7 @@ STATES = [
 class ShiftTemplateRegistrationLine(models.Model):
     _name = 'shift.template.registration.line'
     _description = 'Attendee Line'
+    _order = 'date_begin desc'
 
     registration_id = fields.Many2one(
         'shift.template.registration', string='Registration', required=True,
