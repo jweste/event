@@ -65,6 +65,7 @@ class ShiftShift(models.Model):
     shift_ticket_ids = fields.One2many(
         'shift.ticket', 'shift_id', string='Shift Ticket',
         default=lambda rec: rec._default_shift_tickets(), copy=True)
+    date_tz = fields.Selection('_tz_get', string='Timezone', default=False)
 
     _sql_constraints = [(
         'template_date_uniq',
