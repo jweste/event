@@ -106,6 +106,7 @@ class ShiftTemplateRegistrationLine(models.Model):
             values = dict(v, **{
                 'shift_id': shift.id,
                 'shift_ticket_id': ticket_id.id,
+                'template_created': True,
             })
             created_registrations.append((0, 0, values))
         vals['shift_registration_ids'] = created_registrations
@@ -162,6 +163,7 @@ class ShiftTemplateRegistrationLine(models.Model):
                         'shift_id': shift.id,
                         'shift_ticket_id': ticket_id.id,
                         'tmpl_reg_line_id': self.id,
+                        'template_created': True,
                     }
                     sr_obj.create(values)
         return res

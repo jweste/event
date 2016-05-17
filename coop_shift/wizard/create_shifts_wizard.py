@@ -127,5 +127,6 @@ class CreateShifts(models.TransientModel):
                                 'shift_id': shift_id.id,
                                 'shift_ticket_id': ticket_id.id,
                                 'tmpl_reg_line_id': strl_id,
+                                'template_created': True,
                             }
                             self.env['shift.registration'].create(vals)

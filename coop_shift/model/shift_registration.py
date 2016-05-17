@@ -62,6 +62,7 @@ class ShiftRegistration(models.Model):
         'shift.registration', "Replacing Registration", required=False)
     replaced_reg_id = fields.Many2one(
         'shift.registration', "Replaced Registration", required=False)
+    template_created = fields.Boolean("Created by a Template", default=False)
 
     _sql_constraints = [(
         'shift_registration_uniq',
