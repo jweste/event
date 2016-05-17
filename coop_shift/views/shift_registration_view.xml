@@ -51,7 +51,7 @@
                         <button name="button_reg_cancel" string="Cancel Registration" states="draft,open" type="object" icon="gtk-cancel"/>
                         <button name="button_reg_absent" string="Absent" states="draft,open" type="object" icon="stock_person"/>
                         <button name="button_reg_excused" string="Excused" states="draft,open" type="object" icon="terp-face-plain"/>
-                        <button name="%(coop_shift.action_replace_registration)d" type="action" icon="terp-partner" string="Replace Member"/>
+                        <button name="%(coop_shift.action_replace_registration)d" type="action" icon="terp-partner" string="Replace Member" states="draft,open"/>
                         <field name="state" nolabel="1" colspan="2" widget="statusbar" statusbar_visible="draft,open,done" attrs="{'invisible':[('state', 'in', ['absent','excused','replaced','replacing'])]}"/>
                         <field name="state" nolabel="1" colspan="2" widget="statusbar" statusbar_visible="draft,open,excused,absent,done" attrs="{'invisible':[('state', 'not in', ['absent','excused','replaced','replacing'])]}"/>
                     </header>
