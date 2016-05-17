@@ -78,10 +78,10 @@ class CreateShifts(models.TransientModel):
                 rec_date = datetime(
                     rec_date.year, rec_date.month, rec_date.day)
                 date_begin = datetime.strftime(
-                    rec_date + timedelta(hours=template.start_time),
+                    rec_date + timedelta(hours=(template.start_time - 2)),
                     "%Y-%m-%d %H:%M:%S")
                 date_end = datetime.strftime(
-                    rec_date + timedelta(hours=template.end_time),
+                    rec_date + timedelta(hours=(template.end_time - 2)),
                     "%Y-%m-%d %H:%M:%S")
                 rec_date = datetime.strftime(rec_date, "%Y-%m-%d")
                 vals = {
