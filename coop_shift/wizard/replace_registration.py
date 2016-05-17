@@ -52,16 +52,21 @@ class ReplaceRegistration(models.TransientModel):
     phone = fields.Char(readonly=True, related='new_partner_id.phone')
     name = fields.Char(readonly=True, related='new_partner_id.name')
 
-    @api.one
+    @api.multi
     def replace_member(self):
-        new_reg_id = self.registration_id.copy({
-            'partner_id': self.new_partner_id.id,
-            'state': 'replacing',
-            'replaced_reg_id': self.registration_id.id,
-            'tmpl_reg_line_id': False, }, )
-        self.registration_id.state = "replaced"
-        self.replacing_reg_id = new_reg_id.id
+        for wizard in self:
+            new_reg_id = wizard.registration_id.copy({
+                'partner_id': wizard.new_partner_id.id,
+                'state': 'replacing',
+                'replaced_reg_id': wizard.registration_id.id,
+                'tmpl_reg_line_id': False, }, )
+            wizard.registration_id.state = "replaced"
+            wizard.replacing_reg_id = new_reg_id.id
         return {
-            'type': 'ir.actions.client',
-            'tag': 'reload',
+            'view_type': 'form',
+            'view_mode': 'tree,form',
+            'res_model': 'shift.registration',
+            'context': self._context,
+            'type': 'ir.actions.act_window',
+            'target': 'current',
         }
