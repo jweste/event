@@ -35,8 +35,8 @@
                     <field name="week_number"/>
                     <field name="user_id"/>
                     <field name="start_date"/>
-                    <field name="start_time"/>
-                    <field name="end_time"/>
+                    <field name="start_time" widget="float_time"/>
+                    <field name="end_time" widget="float_time"/>
                     <field name="seats_min"/>
                     <field name="seats_availability"/>
                     <field name="seats_max" attrs="{'invisible': [('seats_availability','=','unlimited')]}"/>
