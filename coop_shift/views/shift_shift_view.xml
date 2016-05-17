@@ -26,7 +26,7 @@
                             </button>
                             <button name="%(coop_shift.act_shift_registration_from_shift)d"
                                 type="action"
-                                class="oe_stat_button oe_shift_attendee_button"
+                                class="oe_stat_button oe_event_attendee_button"
                                 icon="fa-users"
                                 help="Register with this shift">
                                 <field name="seats_expected" widget="statinfo" string="Attendees"/>

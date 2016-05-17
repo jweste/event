@@ -21,14 +21,27 @@
 #
 ##############################################################################
 
-from openerp import models, fields
+from openerp import models, fields, api
 
 
 class ResPartner(models.Model):
     _inherit = 'res.partner'
 
+    @api.multi
+    def _registration_counts(self):
+        d = fields.Datetime.now()
+        for partner in self:
+            partner.upcoming_registration_count = len(
+                partner.registration_ids.filtered(
+                    lambda r, d=d: r.date_begin >= d))
+            partner.tmpl_registration_count = len(partner.tmpl_reg_line_ids)
+
     registration_ids = fields.One2many(
         'shift.registration', "partner_id", 'Registrations')
+    upcoming_registration_count = fields.Integer(
+        "Number of registrations", compute="_registration_counts")
     tmpl_reg_line_ids = fields.One2many(
         'shift.template.registration.line', "partner_id",
         'Template Registrations')
+    tmpl_registration_count = fields.Integer(
+        "Number of Template registrations", compute="_registration_counts")
