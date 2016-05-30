@@ -53,6 +53,7 @@ Copyright, Author and Licence :
         'wizard/update_shifts_wizard_view.xml',
         'wizard/add_template_registration_view.xml',
         'wizard/replace_registration_view.xml',
+        'wizard/report_timesheet_wizard_view.xml',
         'data/coop_shift_data.xml',
         'data/email_template_data.xml',
         'security/shift_security.xml',
@@ -68,6 +69,8 @@ Copyright, Author and Licence :
         'security/ir_model_access_data.yml',
         'security/ir_rule_data.yml',
         'data/module_data.xml',
+        'views/shift_report.xml',
+        'views/report_timesheet.xml',
     ],
     'demo': [
         'data/shift_demo.xml',
