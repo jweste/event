@@ -61,7 +61,7 @@ class ReplaceRegistration(models.TransientModel):
                 'replaced_reg_id': wizard.registration_id.id,
                 'tmpl_reg_line_id': False, }, )
             wizard.registration_id.state = "replaced"
-            wizard.replacing_reg_id = new_reg_id.id
+            wizard.registration_id.replacing_reg_id = new_reg_id.id
         return {
             'view_type': 'form',
             'view_mode': 'tree,form',
