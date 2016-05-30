@@ -13,8 +13,8 @@
      
     <template id="report_timesheet">
         <t t-call="report.html_container">
-        <t t-call="report.external_layout">
-            <tr t-foreach="Shifts" t-as="shift">
+        <tr t-foreach="Shifts" t-as="shift">
+            <t t-call="report.external_layout">
                 <div class="page" style="page-break-after:always">
                 <div class="row mt8 mb0">
                     <div class="col-xs-4" style="text-align:right"><h1>Timesheet of: </h1></div>
@@ -105,7 +105,9 @@
                     </tbody>
                 </table>
                 </div>
+            </t>
 
+            <t t-call="report.external_layout">
                 <div class="page" style="page-break-after:always">
                 <div class="row mt8 mb0">
                     <div class="col-xs-4" style="text-align:right"><h1>Timesheet of: </h1></div>
@@ -166,8 +168,8 @@
                     </div>
                 </div>
                 </div>
-            </tr>
-        </t>
+            </t>
+        </tr>
         </t>
     </template>
 </data>
