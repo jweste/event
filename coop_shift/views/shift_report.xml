@@ -6,10 +6,14 @@
             id="timesheet"
             model="report.timesheet"
             string="Timesheet"
-            report_type="qweb-html"
+            report_type="qweb-pdf"
             name="coop_shift.report_timesheet"
             file="coop_shift.report_timesheet"
             attachment_use="False"
         />
+        <record id="coop_shift.timesheet" model="ir.actions.report.xml">
+            <field name="paperformat_id" ref="report.paperformat_euro"/>
+            <field name="attachment_use" eval="0"/>
+        </record>
     </data>
 </openerp>
