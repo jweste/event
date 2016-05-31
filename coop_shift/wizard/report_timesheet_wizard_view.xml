@@ -36,4 +36,13 @@
             groups="group_shift_manager"
             sequence="14"/>
     </data>
+
+    <record id="action_timesheet_multi" model="ir.values">
+        <field name="model_id" ref="coop_shift.model_shift_shift" />
+        <field name="name">Timesheet</field>
+        <field name="key2">client_print_multi</field>
+        <field name="value" eval="'ir.actions.act_window,' +str(ref('action_timesheet_wizard'))" />
+        <field name="key">action</field>
+        <field name="model">shift.shift</field>
+    </record>
 </openerp>

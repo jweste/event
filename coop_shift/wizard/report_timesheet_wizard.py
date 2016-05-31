@@ -28,6 +28,11 @@ from datetime import datetime, timedelta
 class ReportTimesheet(models.TransientModel):
     _name = "report.timesheet"
 
+    def _get_selected_shifts(self):
+        shift_ids = self.env.context.get('active_ids', False)
+        if shift_ids:
+            return shift_ids
+
     @api.onchange('date')
     def _onchange_date_report(self):
         res = {}
@@ -45,7 +50,7 @@ class ReportTimesheet(models.TransientModel):
     date_report = fields.Date(string="Date")
     shift_ids = fields.Many2many(
         'shift.shift', 'shift_timeshift_rel', 'timesheet_id', 'shift_id',
-        string="Shifts",)
+        string="Shifts", default=_get_selected_shifts)
 
     @api.multi
     def check_report(self):
