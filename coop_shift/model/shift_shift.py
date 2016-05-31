@@ -39,6 +39,7 @@ class ShiftShift(models.Model):
             'template_id': self.env.ref('coop_shift.shift_subscription')
         })]
 
+    name = fields.Char(string="Shift Name")
     event_mail_ids = fields.One2many(default=None)
     shift_mail_ids = fields.One2many(
         'shift.mail', 'shift_id', string='Mail Schedule',
