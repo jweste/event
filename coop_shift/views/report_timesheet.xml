@@ -1,16 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 <data>
-    <!-- <template id="report_timesheet_document">
-        <t t-call="report.external_layout">
-            <div class="page">
-                <div class="row">
-                    <h3>Timesheet</h3>
-                </div>
-            </div>
-        </t>
-    </template> -->
-     
     <template id="report_timesheet">
         <t t-call="report.html_container">
         <tr t-foreach="Shifts" t-as="shift">
