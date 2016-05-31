@@ -9,17 +9,21 @@ class ReportTimesheet(models.AbstractModel):
     _name = 'report.coop_shift.report_timesheet'
 
     @api.model
-    def _get_shifts(self, date):
-        if not date:
-            date = date.today()
-        date2 = datetime.datetime.strftime(
-            datetime.datetime.strptime(date, "%Y-%m-%d") + timedelta(days=1),
-            "%Y-%m-%d")
+    def _get_shifts(self, date_report, shifts):
+        if shifts:
+            shifts = self.env['shift.shift'].browse(shifts)
+        else:
+            if not date_report:
+                date_report = date.today()
+            date2 = datetime.datetime.strftime(
+                datetime.datetime.strptime(date_report, "%Y-%m-%d") +
+                timedelta(days=1), "%Y-%m-%d")
+            shifts = self.env['shift.shift'].search([
+                '&', ('date_begin', '>=', date_report),
+                ('date_begin', '<', date2)])
 
         result = []
-        for shift in self.env['shift.shift'].search([
-            '&', ('date_begin', '>=', date), ('date_begin', '<', date2),
-        ]):
+        for shift in shifts:
             registrations = []
             ftops = []
             for reg in shift.registration_ids:
@@ -43,11 +47,12 @@ class ReportTimesheet(models.AbstractModel):
         self.model = self.env.context.get('active_model')
         docs = self.env[self.model].browse(self.env.context.get('active_id'))
 
-        date_report = data['form'].get('date', date.today())
+        date_report = data['form'].get('date_report', date.today())
+        shifts = data['form'].get('shift_ids', [])
 
         shifts_res = self.with_context(
             data['form'].get('used_context', {}))._get_shifts(
-            date_report)
+            date_report, shifts)
         docargs = {
             'doc_ids': self.ids,
             'partner_id': self.env.user.partner_id,

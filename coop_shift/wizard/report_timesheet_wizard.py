@@ -22,18 +22,30 @@
 ##############################################################################
 
 from openerp import models, fields, api
-from datetime import date
+from datetime import datetime, timedelta
 
 
 class ReportTimesheet(models.TransientModel):
     _name = "report.timesheet"
 
-    date = fields.Date(string="Date", required=True, default=date.today())
+    @api.onchange('date')
+    def _onchange_date_report(self):
+        res = {}
+        if self.date_report:
+            date2 = datetime.strftime(
+                datetime.strptime(self.date_report, '%Y-%m-%d') -
+                timedelta(days=1), '%Y-%m-%d')
+            res['domain'] = {'shift_ids': [
+                '&', ('date_begin', '<=', self.date_report, ),
+                ('date_end', '>', date2)]}
+        else:
+            res['domain'] = {'shift_ids': []}
+        return res
 
-    def _build_contexts(self, data):
-        result = {}
-        result['date'] = data['form']['date'] or date.today()
-        return result
+    date_report = fields.Date(string="Date")
+    shift_ids = fields.Many2many(
+        'shift.shift', 'shift_timeshift_rel', 'timesheet_id', 'shift_id',
+        string="Shifts",)
 
     @api.multi
     def check_report(self):
@@ -41,9 +53,8 @@ class ReportTimesheet(models.TransientModel):
         data = {}
         data['ids'] = self.env.context.get('active_ids', [])
         data['model'] = self.env.context.get('active_model', 'ir.ui.menu')
-        data['form'] = self.read(['date'])[0]
-        used_context = self._build_contexts(data)
+        data['form'] = self.read(['date_report', 'shift_ids'])[0]
         data['form']['used_context'] = dict(
-            used_context, lang=self.env.context.get('lang', 'en_US'))
+            lang=self.env.context.get('lang', 'en_US'))
         return self.env['report'].get_action(
             self, 'coop_shift.report_timesheet', data=data)

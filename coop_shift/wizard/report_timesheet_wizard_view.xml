@@ -6,7 +6,8 @@
             <field name="model">report.timesheet</field>
             <field name="arch" type="xml">
             <form string="Report Options">
-                <field name="date"/>
+                <field name="date_report"/>
+                <field name="shift_ids" label="Shifts"/>
                 <footer>
                     <button name="check_report" string="Print" type="object" default_focus="1" class="oe_highlight"/>
                     or 
