@@ -50,9 +50,3 @@ class ShiftTemplateMailScheduler(models.Model):
         domain=[('model', '=', 'shift.registration')], required=True,
         help="""This field contains the template of the mail that will be
         automatically sent""")
-    # scheduled_date = fields.Datetime('Scheduled Sent Mail',
-    # compute='_compute_scheduled_date', store=True)
-    # mail_registration_ids = fields.One2many('shift.mail.registration',
-    # 'scheduler_id')
-    # mail_sent = fields.Boolean('Mail Sent on Shift')
-    # done = fields.Boolean('Sent', compute='_compute_done', store=True)
