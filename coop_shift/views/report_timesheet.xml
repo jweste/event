@@ -16,12 +16,12 @@
                         <div class="col-xs-4" style="text-align:right"><h2>Commitee/Squad: </h2></div>
                         <div class="col-xs-5"><h2><span t-esc="shift['shift'].name"/></h2></div>
                     </div>
-                    <div style="border: 3px solid black">
+                    <div style="border: 2px solid black">
                         <div class="row mt0 mb0">
-                            <div class="col-xs-5"><big><big>Sheduled Members</big></big></div>
-                            <div class="col-xs-2" style="vertical-align:bottom"><small>Squad leader use only</small></div>
-                            <div class="col-xs-4"><big><big>Members Working</big></big><br/><big>(Regular or Sub)</big></div>
-                            <div class="col-xs-1" style="text-align:right"><small><small>Squad leader <br/>use only </small></small></div>
+                            <div class="col-xs-5" style="text-align:center"><bold>SCHEDULED MEMBERS</bold></div>
+                            <div class="col-xs-1" style="text-align:center"><small><small>Squad leader use only</small></small></div>
+                            <div class="col-xs-5" style="text-align:center"><bold>MEMBERS WORKING</bold><br/><font size="15">(Regular or Sub)</font></div>
+                            <div class="col-xs-1" style="text-align:center"><small><small>Squad leader <br/>use only </small></small></div>
                         </div>
                     </div>
 
@@ -31,11 +31,10 @@
                                 <th width="8.33%">Prior<br/>Shifts<br/>Due</th>
                                 <th width="8.34%">Work<br/>Status</th>
                                 <th width="25%">Member Name</th>
-                                <th width="8.33%" style="background:#BDBDBD">Assigned<br/>Job</th>
-                                <th width="8.33%" style="background:#BDBDBD">Cashier<br/>start<br/>time</th>
+                                <th width="8.33%" style="background:#DDDDDD">Cashier<br/>start<br/>time</th>
                                 <th width="8.34%">Member<br/>Number</th>
-                                <th width="25%">Member Working</th>
-                                <th width="8.33%" style="background:#BDBDBD"><small>Nb of<br/>MakeUps<br/>if absent</small></th>
+                                <th width="33.33%">Member Working</th>
+                                <th width="8.33%" style="background:#DDDDDD"><small>Nb of<br/>MakeUps<br/>if absent</small></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -43,11 +42,10 @@
                                 <td></td>
                                 <td></td>
                                 <td><span t-esc="registration['registration'].name"/></td>
-                                <td style="background:#BDBDBD"></td>
-                                <td style="background:#BDBDBD"></td>
+                                <td style="background:#DDDDDD"></td>
                                 <td></td>
                                 <td><span t-esc="registration['replacement'].name"/></td>
-                                <td style="background:#BDBDBD"></td>
+                                <td style="background:#DDDDDD"></td>
                             </tr>
                             <t t-set="nb_lines" t-value="(((shift['registration_number']+shift['ftop_number'])*3/2)//21+1)*21"/>
                             <t t-set="nb_free_lines" t-value="nb_lines-shift['registration_number']-shift['ftop_number']-1"/>
@@ -55,11 +53,10 @@
                                 <td><font color="white">_</font></td>
                                 <td></td>
                                 <td></td>
-                                <td style="background:#BDBDBD"></td>
-                                <td style="background:#BDBDBD"></td>
+                                <td style="background:#DDDDDD"></td>
                                 <td></td>
                                 <td></td>
-                                <td style="background:#BDBDBD"></td>
+                                <td style="background:#DDDDDD"></td>
                             </tr>
                             <tr>
                                 <td></td>
@@ -69,28 +66,25 @@
                                 <td></td>
                                 <td></td>
                                 <td></td>
-                                <td></td>
                             </tr>
                             <tr t-foreach="shift['ftop']" t-as="ftop">
                                 <td></td>
                                 <td></td>
                                 <td><span t-esc="ftop.name"/></td>
-                                <td style="background:#BDBDBD"></td>
-                                <td style="background:#BDBDBD"></td>
+                                <td style="background:#DDDDDD"></td>
                                 <td></td>
                                 <td></td>
-                                <td style="background:#BDBDBD"></td>
+                                <td style="background:#DDDDDD"></td>
                             </tr>
                             <t t-set="nb_lines_ftop" t-value="int(nb_lines*1/3)"/>
                             <tr t-foreach="int(nb_free_lines*1/3)" t-as="i">
                                 <td><font color="white">_</font></td>
                                 <td></td>
                                 <td></td>
-                                <td style="background:#BDBDBD"></td>
-                                <td style="background:#BDBDBD"></td>
+                                <td style="background:#DDDDDD"></td>
                                 <td></td>
                                 <td></td>
-                                <td style="background:#BDBDBD"></td>
+                                <td style="background:#DDDDDD"></td>
                             </tr>
                         </tbody>
                     </table>
@@ -148,7 +142,7 @@
                     <div class="row mt0 mb0">
                         <div class="col-xs-12">All members who owe time for more than four weeks will be suspended, unless an extension is recorded in the Squad Leader Notes Section Below.</div>
                     </div>
-                    <div style="background:#BDBDBD">
+                    <div style="background:#DDDDDD">
                         <div class="row mt0 mb0">
                             <div class="col-xs-10"><h2>Squad Leader Notes to the Membership Office</h2></div>
                             <div class="col-xs-2">Squad Leader Use Only</div>
