@@ -41,7 +41,7 @@
                         <tbody>
                             <tr t-foreach="shift['registrations']" t-as="registration">
                                 <td></td>
-                                <td><span t-esc="registration['registration'].state"/></td>
+                                <td></td>
                                 <td><span t-esc="registration['registration'].name"/></td>
                                 <td style="background:#BDBDBD"></td>
                                 <td style="background:#BDBDBD"></td>
@@ -71,7 +71,7 @@
                             </tr>
                             <tr t-foreach="shift['ftop']" t-as="ftop">
                                 <td></td>
-                                <td><span t-esc="ftop.state"/></td>
+                                <td></td>
                                 <td><span t-esc="ftop.name"/></td>
                                 <td style="background:#BDBDBD"></td>
                                 <td style="background:#BDBDBD"></td>
