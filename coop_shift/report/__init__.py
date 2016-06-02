@@ -22,3 +22,4 @@
 ##############################################################################
 
 from . import report_timesheet
+from . import report_wallchart_template
