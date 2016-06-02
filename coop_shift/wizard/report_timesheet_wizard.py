@@ -33,7 +33,7 @@ class ReportTimesheet(models.TransientModel):
         if shift_ids:
             return shift_ids
 
-    @api.onchange('date')
+    @api.onchange('date_report')
     def _onchange_date_report(self):
         res = {}
         if self.date_report:
