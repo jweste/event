@@ -22,7 +22,7 @@
 ##############################################################################
 
 from openerp import api, models
-from datetime import date
+from datetime import date, datetime
 
 WEEK_DAYS = {
     'mo': 'Monday',
@@ -42,6 +42,41 @@ class ReportTimesheet(models.AbstractModel):
     def format_float_time(self, time):
         return '%s:%s' % (str(time).split('.')[0], int(float(str(
             '%.2f' % time).split('.')[1]) / 100 * 60) or "00")
+
+    @api.model
+    def _get_ticket_partners(self, ticket):
+        partners = []
+        for reg in ticket.registration_ids:
+            ok = False
+            dates = ""
+            for line in reg.line_ids:
+                if (line.date_end and datetime.strptime(
+                        line.date_end, "%Y-%m-%d") <= datetime.today()) or\
+                        line.state != "open":
+                    continue
+                ok = True
+                if line.date_begin and datetime.strptime(
+                        line.date_begin, "%Y-%m-%d") > datetime.today():
+                    dates = ("+ from %s " % line.date_begin) + dates
+                if line.date_end:
+                    dates = ("+ until %s " % line.date_end) + dates
+            dates = dates and (" (" + dates[2:-1] + ")")
+            if ok:
+                partners.append({
+                    'partner_id': reg.partner_id,
+                    'dates': dates})
+        return partners
+
+    @api.model
+    def _get_template_info(self, template):
+        tickets = template.shift_ticket_ids.filtered(
+            lambda t: t.product_id.name == 'Standard Subscription')
+        partners = []
+        seats_max = 0
+        for ticket in tickets:
+            partners += self._get_ticket_partners(ticket)
+            seats_max += ticket.seats_max
+        return partners, seats_max
 
     @api.model
     def _get_templates(self, data):
@@ -75,14 +110,7 @@ class ReportTimesheet(models.AbstractModel):
                         res['free_seats' + week_letter[week - 1]] = 0
                         continue
                     template = template[0]
-                    tickets = template.shift_ticket_ids.filtered(
-                        lambda t: t.product_id.name == 'Standard Subscription')
-                    partners = []
-                    seats_max = 0
-                    for ticket in tickets:
-                        partners += [
-                            r.partner_id for r in ticket.registration_ids]
-                        seats_max += ticket.seats_max
+                    partners, seats_max = self._get_template_info(template)
                     res['partners' + week_letter[week - 1]] = partners
                     res['free_seats' + week_letter[week - 1]] =\
                         max(0, seats_max - len(partners))
