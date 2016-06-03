@@ -35,7 +35,7 @@ WEEK_DAYS = {
 }
 
 
-class ReportTimesheet(models.AbstractModel):
+class ReportWallchartTemplate(models.AbstractModel):
     _name = 'report.coop_shift.report_wallchart_template'
 
     @api.model

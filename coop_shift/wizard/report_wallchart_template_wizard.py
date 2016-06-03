@@ -25,8 +25,8 @@ from openerp import models, fields, api, _
 from openerp.exceptions import UserError
 
 
-class ReportWallchartTemplate(models.TransientModel):
-    _name = "report.wallchart_template"
+class ReportWallchart(models.TransientModel):
+    _name = "report.wallchart"
 
     def _get_selected_shifts(self):
         shift_ids = self.env.context.get('active_ids', False)
@@ -48,7 +48,7 @@ class ReportWallchartTemplate(models.TransientModel):
     all_days = fields.Boolean('all')
 
     @api.multi
-    def check_report(self):
+    def check_report(self, report):
         self.ensure_one()
         if not (self.mo or self.tu or self.we or self.th or self.fr or
                 self.sa or self.su):
@@ -59,4 +59,8 @@ class ReportWallchartTemplate(models.TransientModel):
         data['form'] = self.read([
             "mo", "tu", "we", "th", "fr", "sa", "su"])[0]
         return self.env['report'].get_action(
-            self, 'coop_shift.report_wallchart_template', data=data)
+            self, report, data=data)
+
+    @api.multi
+    def check_report_template(self):
+        return self.check_report('coop_shift.report_wallchart_template')
