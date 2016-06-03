@@ -27,7 +27,7 @@
                                 <td><span t-esc="time['start_time']"/> - <span t-esc="time['end_time']"/></td>
                                 <td>
                                     <t t-foreach="time['partnersA']" t-as="partner">
-                                        <span t-esc="partner_index + 1"/> - <span t-esc="partner.name"/><br/>
+                                        <span t-esc="partner_index + 1"/> - <t t-if="partner.ref">[<span t-esc="partner.ref"/>] </t><span t-esc="partner.name"/><br/>
                                         <t t-set="num" t-value="partner_size + 1"/>
                                     </t>
                                     <t t-foreach="time['free_seatsA']" t-as="free_seat">
@@ -37,7 +37,7 @@
                                 </td>
                                 <td>
                                     <t t-foreach="time['partnersB']" t-as="partner">
-                                        <span t-esc="partner_index + 1"/> - <span t-esc="partner.name"/><br/>
+                                        <span t-esc="partner_index + 1"/> - <t t-if="partner.ref">[<span t-esc="partner.ref"/>] </t><span t-esc="partner.name"/><br/>
                                         <t t-set="num" t-value="partner_size + 1"/>
                                     </t>
                                     <t t-foreach="time['free_seatsB']" t-as="free_seat">
@@ -47,7 +47,7 @@
                                 </td>
                                 <td>
                                     <t t-foreach="time['partnersC']" t-as="partner">
-                                        <span t-esc="partner_index + 1"/> - <span t-esc="partner.name"/><br/>
+                                        <span t-esc="partner_index + 1"/> - <t t-if="partner.ref">[<span t-esc="partner.ref"/>] </t><span t-esc="partner.name"/><br/>
                                         <t t-set="num" t-value="partner_size + 1"/>
                                     </t>
                                     <t t-foreach="time['free_seatsC']" t-as="free_seat">
@@ -57,7 +57,7 @@
                                 </td>
                                 <td>
                                     <t t-foreach="time['partnersD']" t-as="partner">
-                                        <span t-esc="partner_index + 1"/> - <span t-esc="partner.name"/><br/>
+                                        <span t-esc="partner_index + 1"/> - <t t-if="partner.ref">[<span t-esc="partner.ref"/>] </t><span t-esc="partner.name"/><br/>
                                         <t t-set="num" t-value="partner_size + 1"/>
                                     </t>
                                     <t t-foreach="time['free_seatsD']" t-as="free_seat">
