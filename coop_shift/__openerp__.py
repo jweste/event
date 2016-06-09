@@ -58,7 +58,7 @@ Copyright, Author and Licence :
         'security/shift_security.xml',
         'views/menu.xml',
         'wizard/report_timesheet_wizard_view.xml',
-        'wizard/report_wallchart_template_wizard_view.xml',
+        'wizard/report_wallchart_wizard_view.xml',
         'views/product_view.xml',
         'views/shift_mail_view.xml',
         'views/shift_registration_view.xml',
