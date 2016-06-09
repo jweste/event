@@ -72,7 +72,7 @@ Copyright, Author and Licence :
         'data/module_data.xml',
         'views/shift_report.xml',
         'views/report_timesheet.xml',
-        'views/report_wallchart_template.xml',
+        'views/report_wallchart.xml',
     ],
     'demo': [
         'data/shift_demo.xml',
