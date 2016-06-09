@@ -24,6 +24,8 @@
 from openerp import api, models
 from datetime import date, datetime
 
+rounding_limit = 0.00000000001
+
 WEEK_DAYS = {
     'mo': 'Monday',
     'tu': 'Tuesday',
@@ -98,8 +100,10 @@ class ReportWallchartTemplate(models.AbstractModel):
                 res['start_time'] = self.format_float_time(t[0])
                 res['end_time'] = self.format_float_time(t[1])
                 base_search = [
-                    ('start_time', '=', t[0]),
-                    ('end_time', '=', t[1]),
+                    ('start_time', '>=', t[0] - rounding_limit),
+                    ('start_time', '<=', t[0] + rounding_limit),
+                    ('end_time', '>=', t[1] - rounding_limit),
+                    ('end_time', '<=', t[1] + rounding_limit),
                 ]
                 week_letter = ['A', 'B', 'C', 'D']
                 for week in [1, 2, 3, 4]:
