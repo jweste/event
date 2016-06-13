@@ -69,8 +69,8 @@ class ShiftTemplateRegistration(models.Model):
     @api.model
     def _get_state(self, date_check):
         for line in self.line_ids:
-            if (not line.date_begin or date_check > line.date_begin) and\
-                    (not line.date_end or date_check < line.date_end):
+            if (not line.date_begin or date_check >= line.date_begin) and\
+                    (not line.date_end or date_check <= line.date_end):
                 return line.state, line.id
         return False, False
 
