@@ -151,4 +151,4 @@ class ReportWallchartCommon(models.AbstractModel):
     def render_html(self, data):
         docargs = self.prerender_html(data)
         return self.env['report'].render(
-            'coop_shift.report_wallchart_coin', docargs)
+            'coop_shift.report_wallchart_common', docargs)
