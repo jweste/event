@@ -24,7 +24,7 @@
 from openerp import api, models
 from datetime import datetime, timedelta
 
-from coop_shift.report.report_wallchart_common import rounding_limit
+from .report_wallchart_common import rounding_limit
 
 WEEK_DAYS = {
     'mo': 'Monday',
