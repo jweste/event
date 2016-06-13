@@ -55,8 +55,12 @@ class ShiftTemplateRegistration(models.Model):
 
     @api.model
     def _get_default_ticket(self):
-        return self.env['shift.template'].browse(self.env.context[
-            'active_id']).shift_ticket_ids[0] or False
+        active_id = self.env.context.get('active_id', False)
+        if active_id:
+            return self.env['shift.template'].browse(
+                active_id).shift_ticket_ids[0] or False
+        else:
+            return False
 
     @api.model
     def _default_lines(self):
