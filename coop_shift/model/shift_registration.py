@@ -73,6 +73,8 @@ class ShiftRegistration(models.Model):
     @api.one
     @api.constrains('shift_ticket_id', 'state')
     def _check_ticket_seats_limit(self):
+        if self.template_created:
+            return True
         if self.shift_ticket_id.seats_max and\
                 self.shift_ticket_id.seats_available < 0:
             raise UserError(_('No more available seats for this ticket'))
