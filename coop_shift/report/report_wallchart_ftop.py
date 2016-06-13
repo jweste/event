@@ -22,7 +22,7 @@
 ##############################################################################
 
 from openerp import api, models
-from datetime import date, datetime, timedelta
+from datetime import datetime, timedelta
 
 from report_wallchart_common import rounding_limit
 
