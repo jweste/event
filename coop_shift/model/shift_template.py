@@ -23,7 +23,7 @@
 
 import re
 from openerp import models, fields, api, _
-from datetime import datetime
+from datetime import datetime, timedelta
 from dateutil import rrule
 from openerp.exceptions import UserError
 
@@ -328,12 +328,24 @@ class ShiftTemplate(models.Model):
                 template.day = start_date.day
                 template.byday = "%s" % ((start_date.day - 1) // 7 + 1)
 
+    @api.model
+    def _get_week_number(self, test_date):
+        if not test_date:
+            return False
+        weekA_date = datetime.strptime(
+            self.env.ref('coop_shift.config_parameter_weekA').value,
+            "%d/%m/%Y")
+        week_number = 1 + (((test_date - weekA_date).days // 7) % 4)
+        return week_number
+
     @api.multi
     def get_recurrent_dates(self, after=None, before=None):
         for template in self:
             start = datetime.strptime(after or template.start_date, "%Y-%m-%d")
             stop = datetime.strptime(before or template.final_date, "%Y-%m-%d")
-            return rrule.rrulestr(str(template.rrule)).between(
+            delta = (template.week_number - self._get_week_number(start)) % 4
+            start += timedelta(weeks=delta)
+            return rrule.rrulestr(str(template.rrule), dtstart=start).between(
                 after=start, before=stop, inc=True)
 
     def compute_rule_string(self, data):
