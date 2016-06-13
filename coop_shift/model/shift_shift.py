@@ -207,7 +207,7 @@ class ShiftShift(models.Model):
     def _convert_time_float(self, t):
         return (((
             float(t.microsecond) / 1000000) + float(t.second) / 60) + float(
-                t.minute)) / 60 + t.hour
+            t.minute)) / 60 + t.hour
 
     @api.multi
     @api.depends('date_begin')
