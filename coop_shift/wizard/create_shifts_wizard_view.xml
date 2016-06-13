@@ -25,7 +25,7 @@
        <field name="model_id" ref="coop_shift.model_shift_template" />
        <field name="name">Create Shifts</field>
        <field name="key2">client_action_multi</field>
-       <field name="value" eval="'ir.actions.act_window,' +str(ref('action_create_shift_shifts'))" />
+       <field name="value" eval="'ir.actions.act_window,' +str(ref('coop_shift.action_create_shift_shifts'))" />
        <field name="key">action</field>
        <field name="model">shift.template</field>
     </record>
