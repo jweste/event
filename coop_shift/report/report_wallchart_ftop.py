@@ -22,9 +22,9 @@
 ##############################################################################
 
 from openerp import api, models
-from datetime import date, datetime, timedelta
+from datetime import datetime, timedelta
 
-from report_wallchart_common import rounding_limit
+from .report_wallchart_common import rounding_limit
 
 WEEK_DAYS = {
     'mo': 'Monday',

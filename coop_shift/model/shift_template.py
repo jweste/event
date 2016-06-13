@@ -392,7 +392,7 @@ class ShiftTemplate(models.Model):
             return (
                 data.get('end_type') == 'count' and
                 (';COUNT=' + str(data.get('count'))) or ''
-                ) +\
+            ) +\
                 ((
                     data.get('end_date_new') and
                     data.get('end_type') == 'end_date' and
