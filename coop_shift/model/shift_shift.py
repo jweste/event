@@ -67,6 +67,12 @@ class ShiftShift(models.Model):
         'shift.ticket', 'shift_id', string='Shift Ticket',
         default=lambda rec: rec._default_shift_tickets(), copy=True)
     date_tz = fields.Selection('_tz_get', string='Timezone', default=False)
+    date_without_time = fields.Datetime(
+        string='Date', compute='_get_date_without_time', store=True)
+    begin_time = fields.Float(
+        string='Start Time', compute='_get_begin_time', store=True)
+    end_time = fields.Float(
+        string='Start Time', compute='_get_end_time', store=True)
 
     _sql_constraints = [(
         'template_date_uniq',
@@ -188,3 +194,31 @@ class ShiftShift(models.Model):
                         'shift_id': self.id,
                     }))
                 self.registration_ids = vals
+
+    @api.multi
+    @api.depends('date_begin')
+    def _get_date_without_time(self):
+        for shift in self:
+            print shift.date_begin
+            shift.date_without_time = datetime.strftime(datetime.strptime(
+                shift.date_begin, "%Y-%m-%d %H:%M:%S"), "%Y-%m-%d")
+
+    @api.model
+    def _convert_time_float(self, t):
+        return (((
+            float(t.microsecond) / 1000000) + float(t.second) / 60) + float(
+                t.minute)) / 60 + t.hour
+
+    @api.multi
+    @api.depends('date_begin')
+    def _get_begin_time(self):
+        for shift in self:
+            shift.begin_time = self._convert_time_float(datetime.strptime(
+                shift.date_begin, "%Y-%m-%d %H:%M:%S").time())
+
+    @api.multi
+    @api.depends('date_end')
+    def _get_end_time(self):
+        for shift in self:
+            shift.end_time = self._convert_time_float(datetime.strptime(
+                shift.date_end, "%Y-%m-%d %H:%M:%S").time())
