@@ -199,7 +199,6 @@ class ShiftShift(models.Model):
     @api.depends('date_begin')
     def _get_date_without_time(self):
         for shift in self:
-            print shift.date_begin
             shift.date_without_time = datetime.strftime(datetime.strptime(
                 shift.date_begin, "%Y-%m-%d %H:%M:%S"), "%Y-%m-%d")
 
