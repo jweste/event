@@ -23,7 +23,6 @@
 
 from openerp import models, fields, api, _
 from datetime import datetime, timedelta
-from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
 from openerp.exceptions import UserError
 
 
