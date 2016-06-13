@@ -111,6 +111,7 @@ class CreateShifts(models.TransientModel):
                         'price': ticket.price,
                         'deadline': ticket.deadline,
                         'seats_availability': ticket.seats_availability,
+                        'seats_max': ticket.seats_max,
                     }
                     ticket_id = self.env['shift.ticket'].create(vals)
 
