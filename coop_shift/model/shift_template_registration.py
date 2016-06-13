@@ -46,6 +46,12 @@ class ShiftTemplateRegistration(models.Model):
         'shift.template.registration.line', 'registration_id', string='Lines',
         default=lambda rec: rec._default_lines(), copy=True)
     state = fields.Selection()
+    template_start_date = fields.Date(
+        string="Template Start Date", related='shift_template_id.start_date',
+        readonly=True)
+    template_start_time = fields.Float(
+        string="Template Start Time", related='shift_template_id.start_time',
+        readonly=True)
 
     _sql_constraints = [(
         'template_registration_uniq',

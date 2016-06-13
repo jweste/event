@@ -63,6 +63,9 @@ class ShiftRegistration(models.Model):
     replaced_reg_id = fields.Many2one(
         'shift.registration', "Replaced Registration", required=False)
     template_created = fields.Boolean("Created by a Template", default=False)
+    shit_begin_date = fields.Datetime(
+        string="Shift Start Date", related='shift_id.date_begin',
+        readonly=True)
 
     _sql_constraints = [(
         'shift_registration_uniq',
