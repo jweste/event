@@ -56,7 +56,9 @@ class ShiftTemplate(models.Model):
             'shift.shift'))
     shift_type_id = fields.Many2one(
         'shift.type', string='Category', required=False)
-    week_number = fields.Selection(WEEK_NUMBERS, string='Week', required=True)
+    week_number = fields.Selection(
+        WEEK_NUMBERS, string='Week', compute="_compute_week_number",
+        store=True)
     color = fields.Integer('Kanban Color Index')
     shift_mail_ids = fields.One2many(
         'shift.template.mail', 'shift_template_id', string='Mail Schedule',
@@ -327,6 +329,15 @@ class ShiftTemplate(models.Model):
                     template.week_list = "SU"
                 template.day = start_date.day
                 template.byday = "%s" % ((start_date.day - 1) // 7 + 1)
+
+    @api.depends('start_date')
+    def _compute_week_number(self):
+        if not self.start_date:
+            return False
+        weekA_date = datetime.strptime(
+            self.env.ref('coop_shift.config_parameter_weekA').value,
+            "%d/%m/%Y")
+        self.week_number = 1 + (((self.start_date - weekA_date).days // 7) % 4)
 
     @api.model
     def _get_week_number(self, test_date):
