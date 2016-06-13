@@ -36,25 +36,24 @@ class CreateShifts(models.TransientModel):
         template_id = self.env.context.get('active_id', False)
         if template_id:
             template = self.env['shift.template'].browse(template_id)
-            if template.shift_ids:
-                return max(
-                    shift.date_begin for shift in template.shift_ids)
+            return template.last_shift_date
         return False
 
     @api.model
     def _get_default_date(self):
-        lsd = self._get_last_shift_date()
-        if lsd:
-            lsd = datetime.strptime(lsd, DEFAULT_SERVER_DATETIME_FORMAT)
-            return datetime.strftime(
-                lsd + timedelta(days=1), DEFAULT_SERVER_DATETIME_FORMAT)
-        else:
-            template_id = self.env.context.get('active_id', False)
-            if template_id:
-                template = self.env['shift.template'].browse(template_id)
-                return template.start_date
+        lsd = False
+        template_id = self.env.context.get('active_id', False)
+        if template_id:
+            template = self.env['shift.template'].browse(template_id)
+            lsd = template.last_shift_date
+            if lsd:
+                lsd = datetime.strptime(lsd, "%Y-%m-%d")
+                return datetime.strftime(
+                    lsd + timedelta(days=1), "%Y-%m-%d")
             else:
-                return datetime.now()
+                return template.start_date
+        else:
+            return datetime.now()
 
     last_shift_date = fields.Date(
         'Last created shift date', default=_get_last_shift_date)

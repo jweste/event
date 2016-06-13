@@ -116,6 +116,8 @@ class ShiftTemplate(models.Model):
     duration = fields.Float('Duration (hours)', default=3.0)
     end_time = fields.Float(string='End Time')
     updated_fields = fields.Char('Updated Fields')
+    last_shift_date = fields.Date(
+        "Last Scheduled Shift", compute="_get_last_shift_date")
 
     # RECURRENCE FIELD
     rrule_type = fields.Selection([
@@ -461,3 +463,13 @@ class ShiftTemplate(models.Model):
     @api.multi
     def discard_changes(self):
         return self.write({'updated_fields': ''})
+
+    @api.depends('shift_ids')
+    @api.multi
+    def _get_last_shift_date(self):
+        for template in self:
+            if template.shift_ids:
+                template.last_shift_date = max(
+                    shift.date_begin for shift in template.shift_ids)
+            else:
+                template.last_shift_date = False
