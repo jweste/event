@@ -18,6 +18,7 @@
                 </group>
                 <footer>
                     <button name="check_report_template" string="Template Wallchart" type="object" default_focus="1" class="oe_highlight"/>
+                    <button name="check_report_ftop" string="FTOP Wallchart" type="object" class="oe_highlight"/>
                     or
                     <button string="Cancel" class="oe_link" special="cancel" />
                 </footer>

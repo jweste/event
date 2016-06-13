@@ -64,3 +64,7 @@ class ReportWallchart(models.TransientModel):
     @api.multi
     def check_report_template(self):
         return self.check_report('coop_shift.report_wallchart_template')
+
+    @api.multi
+    def check_report_ftop(self):
+        return self.check_report('coop_shift.report_wallchart_ftop')

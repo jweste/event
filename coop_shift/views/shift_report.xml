@@ -29,5 +29,19 @@
             <field name="paperformat_id" ref="report.paperformat_euro"/>
             <field name="attachment_use" eval="0"/>
         </record>
+
+        <report
+            id="wallchart_ftop"
+            model="report.wallchart_ftop"
+            string="Wall Chart - FTOP"
+            report_type="qweb-pdf"
+            name="coop_shift.report_wallchart_ftop"
+            file="coop_shift.report_wallchart_ftop"
+            attachment_use="False"
+        />
+        <record id="coop_shift.wallchart_ftop" model="ir.actions.report.xml">
+            <field name="paperformat_id" ref="report.paperformat_euro"/>
+            <field name="attachment_use" eval="0"/>
+        </record>
     </data>
 </openerp>
