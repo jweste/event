@@ -23,7 +23,7 @@
 
 import re
 from openerp import models, fields, api, _
-from datetime import datetime, timedelta
+from datetime import timedelta
 from dateutil import rrule
 from openerp.exceptions import UserError
 
@@ -299,7 +299,7 @@ class ShiftTemplate(models.Model):
     def _onchange_start_date(self):
         for template in self:
             if template.start_date:
-                start_date = datetime.strptime(template.start_date, "%Y-%m-%d")
+                start_date = fields.Date.from_string(template.start_date)
                 wd = start_date.weekday()
                 template.mo = 0
                 template.tu = 0
@@ -337,27 +337,25 @@ class ShiftTemplate(models.Model):
         if not self.start_date:
             self.week_number = False
         else:
-            weekA_date = datetime.strptime(
-                self.env.ref('coop_shift.config_parameter_weekA').value,
-                "%d/%m/%Y")
-            start_date = datetime.strptime(self.start_date, "%Y-%m-%d")
+            weekA_date = fields.Date.from_string(
+                self.env.ref('coop_shift.config_parameter_weekA').value)
+            start_date = fields.Date.from_string(self.start_date)
             self.week_number = 1 + (((start_date - weekA_date).days // 7) % 4)
 
     @api.model
     def _get_week_number(self, test_date):
         if not test_date:
             return False
-        weekA_date = datetime.strptime(
-            self.env.ref('coop_shift.config_parameter_weekA').value,
-            "%d/%m/%Y")
+        weekA_date = fields.Date.from_string(
+            self.env.ref('coop_shift.config_parameter_weekA').value)
         week_number = 1 + (((test_date - weekA_date).days // 7) % 4)
         return week_number
 
     @api.multi
     def get_recurrent_dates(self, after=None, before=None):
         for template in self:
-            start = datetime.strptime(after or template.start_date, "%Y-%m-%d")
-            stop = datetime.strptime(before or template.final_date, "%Y-%m-%d")
+            start = fields.Date.from_string(after or template.start_date)
+            stop = fields.Date.from_string(before or template.final_date)
             delta = (template.week_number - self._get_week_number(start)) % 4
             start += timedelta(weeks=delta)
             return rrule.rrulestr(str(template.rrule), dtstart=start).between(
