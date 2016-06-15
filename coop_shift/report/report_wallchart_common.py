@@ -21,8 +21,8 @@
 #
 ##############################################################################
 
-from openerp import api, models
-from datetime import date, datetime
+from openerp import api, models, fields
+from datetime import date
 
 rounding_limit = 0.00000000001
 WEEK_LETTER = ['A', 'B', 'C', 'D']
@@ -35,9 +35,8 @@ class ReportWallchartCommon(models.AbstractModel):
     def _get_week_number(self, test_date):
         if not test_date:
             return False
-        weekA_date = datetime.strptime(
-            self.env.ref('coop_shift.config_parameter_weekA').value,
-            "%d/%m/%Y")
+        weekA_date = fields.Date.from_string(
+            self.env.ref('coop_shift.config_parameter_weekA').value)
         week_number = 1 + (((test_date - weekA_date).days // 7) % 4)
         return (week_number, WEEK_LETTER[week_number - 1])
 

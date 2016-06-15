@@ -21,8 +21,8 @@
 #
 ##############################################################################
 
-from openerp import api, models
-from datetime import datetime, timedelta
+from openerp import api, models, fields
+from datetime import datetime, timedelta, date
 
 from .report_wallchart_common import rounding_limit
 
@@ -76,17 +76,16 @@ class ReportWallchartFTOP(models.AbstractModel):
 
             header = []
             weekday_number = self._get_weekday_number(week_day)
-            today_weekday_number = datetime.today().weekday()
+            today_weekday_number = date.today().weekday()
 
             for week in range(4):
-                next_weekday_date = datetime.today() + timedelta(
+                next_weekday_date = date.today() + timedelta(
                     days=(weekday_number - today_weekday_number) % 7) +\
                     timedelta(weeks=week)
                 week_number = self._get_week_number(next_weekday_date)
                 header.append({
                     'date': next_weekday_date,
-                    'date_string': datetime.strftime(
-                        next_weekday_date, "%Y-%m-%d"),
+                    'date_string': fields.Date.to_string(next_weekday_date),
                     'week_number': week_number[0],
                     'week_letter': week_number[1],
                 })

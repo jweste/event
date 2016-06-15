@@ -21,8 +21,8 @@
 #
 ##############################################################################
 
-from openerp import api, models
-from datetime import datetime, timedelta
+from openerp import api, models, fields
+from datetime import timedelta, date, datetime
 
 from .report_wallchart_common import rounding_limit
 
@@ -50,14 +50,14 @@ class ReportWallchartTemplate(models.AbstractModel):
             ok = False
             dates = ""
             for line in reg.line_ids:
-                if (line.date_end and datetime.strptime(
-                        line.date_end, "%Y-%m-%d") <= datetime.today()) or\
+                if (line.date_end and fields.Date.from_string(
+                        line.date_end) <= date.today()) or\
                         line.state != "open":
                     continue
                 ok = True
-                if line.date_begin and datetime.strptime(
-                        line.date_begin, "%Y-%m-%d") > datetime.today():
                     dates = ("+ from %s " % line.date_begin) + dates
+                if line.date_begin and fields.Date.from_string(
+                        line.date_begin) > date.today():
                 if line.date_end:
                     dates = ("+ until %s " % line.date_end) + dates
             dates = dates and (" (" + dates[2:-1] + ")")
@@ -134,7 +134,7 @@ class ReportWallchartTemplate(models.AbstractModel):
     @api.model
     def _get_next_dates(self, weekday):
         result = {}
-        today = datetime.now()
+        today = date.today()
         next_date = today + timedelta(days=(weekday - today.weekday()) % 7)
         week_number = self._get_week_number(next_date)
         for i in range(4):
@@ -142,8 +142,7 @@ class ReportWallchartTemplate(models.AbstractModel):
             result["week" + ["A", "B", "C", "D"][i]] = "(%s, %s, ...)" % (
                 datetime.strftime(next_date + timedelta(weeks=delta), "%x"),
                 datetime.strftime(
-                    next_date + timedelta(weeks=delta + 4), "%x"),
-            )
+                    next_date + timedelta(weeks=delta + 4), "%x"),)
         return result
 
     @api.multi
