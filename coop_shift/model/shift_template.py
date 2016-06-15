@@ -346,7 +346,7 @@ class ShiftTemplate(models.Model):
     def _get_week_number(self, test_date):
         if not test_date:
             return False
-        weekA_date = fields.Date.from_string(
+        weekA_date = fields.Datetime.from_string(
             self.env.ref('coop_shift.config_parameter_weekA').value)
         week_number = 1 + (((test_date - weekA_date).days // 7) % 4)
         return week_number
@@ -354,8 +354,8 @@ class ShiftTemplate(models.Model):
     @api.multi
     def get_recurrent_dates(self, after=None, before=None):
         for template in self:
-            start = fields.Date.from_string(after or template.start_date)
-            stop = fields.Date.from_string(before or template.final_date)
+            start = fields.Datetime.from_string(after or template.start_date)
+            stop = fields.Datetime.from_string(before or template.final_date)
             delta = (template.week_number - self._get_week_number(start)) % 4
             start += timedelta(weeks=delta)
             return rrule.rrulestr(str(template.rrule), dtstart=start).between(
