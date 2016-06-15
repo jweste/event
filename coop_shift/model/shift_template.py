@@ -335,11 +335,13 @@ class ShiftTemplate(models.Model):
     @api.depends('start_date')
     def _compute_week_number(self):
         if not self.start_date:
-            return False
-        weekA_date = datetime.strptime(
-            self.env.ref('coop_shift.config_parameter_weekA').value,
-            "%d/%m/%Y")
-        self.week_number = 1 + (((self.start_date - weekA_date).days // 7) % 4)
+            self.week_number = False
+        else:
+            weekA_date = datetime.strptime(
+                self.env.ref('coop_shift.config_parameter_weekA').value,
+                "%d/%m/%Y")
+            start_date = datetime.strptime(self.start_date, "%Y-%m-%d")
+            self.week_number = 1 + (((start_date - weekA_date).days // 7) % 4)
 
     @api.model
     def _get_week_number(self, test_date):
