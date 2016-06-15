@@ -22,7 +22,7 @@
 ##############################################################################
 
 from openerp import api, models
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from .report_wallchart_common import rounding_limit
 
@@ -35,6 +35,8 @@ WEEK_DAYS = {
     'sa': 'Saturday',
     'su': 'Sunday',
 }
+
+weekday_list = ["mo", "tu", "we", "th", "fr", "sa", "su", ]
 
 
 class ReportWallchartTemplate(models.AbstractModel):
@@ -123,9 +125,26 @@ class ReportWallchartTemplate(models.AbstractModel):
             if result:
                 final_result.append({
                     'day': WEEK_DAYS[week_day],
+                    'next_dates': self._get_next_dates(
+                        weekday_list.index(week_day)),
                     'times': result
                 })
         return final_result
+
+    @api.model
+    def _get_next_dates(self, weekday):
+        result = {}
+        today = datetime.now()
+        next_date = today + timedelta(days=(weekday - today.weekday()) % 7)
+        week_number = self._get_week_number(next_date)
+        for i in range(4):
+            delta = (i + 1 - week_number[0]) % 4
+            result["week" + ["A", "B", "C", "D"][i]] = "(%s, %s, ...)" % (
+                datetime.strftime(next_date + timedelta(weeks=delta), "%x"),
+                datetime.strftime(
+                    next_date + timedelta(weeks=delta + 4), "%x"),
+            )
+        return result
 
     @api.multi
     def render_html(self, data):

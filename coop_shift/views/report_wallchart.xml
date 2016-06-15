@@ -15,10 +15,10 @@
                         <thead>
                             <tr>
                                 <th width="8%">Time</th>
-                                <th width="23%">Week A</th>
-                                <th width="23%">Week B</th>
-                                <th width="23%">Week C</th>
-                                <th width="23%">Week D</th>
+                                <th width="23%">Week A<br/><span t-esc="wallchart['next_dates']['weekA']"/></th>
+                                <th width="23%">Week B<br/><span t-esc="wallchart['next_dates']['weekB']"/></th>
+                                <th width="23%">Week C<br/><span t-esc="wallchart['next_dates']['weekC']"/></th>
+                                <th width="23%">Week D<br/><span t-esc="wallchart['next_dates']['weekD']"/></th>
                             </tr>
                         </thead>
                         <tbody>
