@@ -22,13 +22,24 @@
 ##############################################################################
 
 from openerp import api, models
-from datetime import date
+from datetime import date, datetime
 
 rounding_limit = 0.00000000001
+WEEK_LETTER = ['A', 'B', 'C', 'D']
 
 
 class ReportWallchartCommon(models.AbstractModel):
     _name = 'report.coop_shift.report_wallchart_common'
+
+    @api.model
+    def _get_week_number(self, test_date):
+        if not test_date:
+            return False
+        weekA_date = datetime.strptime(
+            self.env.ref('coop_shift.config_parameter_weekA').value,
+            "%d/%m/%Y")
+        week_number = 1 + (((test_date - weekA_date).days // 7) % 4)
+        return (week_number, WEEK_LETTER[week_number - 1])
 
     @api.model
     def format_float_time(self, time):

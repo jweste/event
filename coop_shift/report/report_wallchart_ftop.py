@@ -35,7 +35,6 @@ WEEK_DAYS = {
     'sa': 'Saturday',
     'su': 'Sunday',
 }
-WEEK_LETTER = ['A', 'B', 'C', 'D']
 
 
 class ReportWallchartFTOP(models.AbstractModel):
@@ -66,16 +65,6 @@ class ReportWallchartFTOP(models.AbstractModel):
         product_name = 'FTOP Subscription'
         return super(ReportWallchartFTOP, self)._get_tickets(
             shift, product_name)
-
-    @api.model
-    def _get_week_number(self, test_date):
-        if not test_date:
-            return False
-        weekA_date = datetime.strptime(
-            self.env.ref('coop_shift.config_parameter_weekA').value,
-            "%d/%m/%Y")
-        week_number = 1 + (((test_date - weekA_date).days // 7) % 4)
-        return (week_number, WEEK_LETTER[week_number - 1])
 
     @api.model
     def _get_report_info(self, data):
