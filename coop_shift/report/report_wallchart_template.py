@@ -55,11 +55,15 @@ class ReportWallchartTemplate(models.AbstractModel):
                         line.state != "open":
                     continue
                 ok = True
-                    dates = ("+ from %s " % line.date_begin) + dates
                 if line.date_begin and fields.Date.from_string(
                         line.date_begin) > date.today():
+                    date_begin = datetime.strftime(fields.Date.from_string(
+                        line.date_begin) - timedelta(days=1), "%x")
+                    dates = ("+ until %s " % date_begin) + dates
                 if line.date_end:
-                    dates = ("+ until %s " % line.date_end) + dates
+                    date_end = datetime.strftime(fields.Date.from_string(
+                        line.date_end) + timedelta(days=1), "%x")
+                    dates = ("+ from %s " % date_end) + dates
             dates = dates and (" (" + dates[2:-1] + ")")
             if ok:
                 partners.append({

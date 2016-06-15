@@ -23,12 +23,14 @@
                         </thead>
                         <tbody>
                             <tr t-foreach="wallchart['times']" t-as="time">
-                                <t t-set="num" t-value="0"/>
                                 <td><span t-esc="time['start_time']"/> - <span t-esc="time['end_time']"/></td>
                                 <td>
+                                    <t t-set="num" t-value="1"/>
                                     <t t-foreach="time['partnersA']" t-as="partner">
-                                        <span t-esc="partner_index + 1"/> - <t t-if="partner['partner_id'].ref">[<span t-esc="partner['partner_id'].ref"/>] </t><span t-esc="partner['partner_id'].name"/><br t-if="partner['dates']"/><span t-esc="partner['dates']"/><br/>
-                                        <t t-set="num" t-value="partner_size + 1"/>
+                                        <t t-if="partner['dates']">
+                                            <span t-esc="num"/> - <span t-esc="partner['dates']"/><br/><br/>
+                                            <t t-set="num" t-value="num + 1"/>
+                                        </t>
                                     </t>
                                     <t t-foreach="time['free_seatsA']" t-as="free_seat">
                                         <t t-set="number" t-value="free_seat_index + num"/>
@@ -36,9 +38,12 @@
                                     </t>
                                 </td>
                                 <td>
+                                    <t t-set="num" t-value="1"/>
                                     <t t-foreach="time['partnersB']" t-as="partner">
-                                        <span t-esc="partner_index + 1"/> - <t t-if="partner['partner_id'].ref">[<span t-esc="partner['partner_id'].ref"/>] </t><span t-esc="partner['partner_id'].name"/><br t-if="partner['dates']"/><span t-esc="partner['dates']"/><br/>
-                                        <t t-set="num" t-value="partner_size + 1"/>
+                                        <t t-if="partner['dates']">
+                                            <span t-esc="num"/> - <span t-esc="partner['dates']"/><br/><br/>
+                                            <t t-set="num" t-value="num + 1"/>
+                                        </t>
                                     </t>
                                     <t t-foreach="time['free_seatsB']" t-as="free_seat">
                                         <t t-set="number" t-value="free_seat_index + num"/>
@@ -46,9 +51,12 @@
                                     </t>
                                 </td>
                                 <td>
+                                    <t t-set="num" t-value="1"/>
                                     <t t-foreach="time['partnersC']" t-as="partner">
-                                        <span t-esc="partner_index + 1"/> - <t t-if="partner['partner_id'].ref">[<span t-esc="partner['partner_id'].ref"/>] </t><span t-esc="partner['partner_id'].name"/><br t-if="partner['dates']"/><span t-esc="partner['dates']"/><br/>
-                                        <t t-set="num" t-value="partner_size + 1"/>
+                                        <t t-if="partner['dates']">
+                                            <span t-esc="num"/> - <span t-esc="partner['dates']"/><br/><br/>
+                                            <t t-set="num" t-value="num + 1"/>
+                                        </t>
                                     </t>
                                     <t t-foreach="time['free_seatsC']" t-as="free_seat">
                                         <t t-set="number" t-value="free_seat_index + num"/>
@@ -56,9 +64,12 @@
                                     </t>
                                 </td>
                                 <td>
+                                    <t t-set="num" t-value="1"/>
                                     <t t-foreach="time['partnersD']" t-as="partner">
-                                        <span t-esc="partner_index + 1"/> - <t t-if="partner['partner_id'].ref">[<span t-esc="partner['partner_id'].ref"/>] </t><span t-esc="partner['partner_id'].name"/><br t-if="partner['dates']"/><span t-esc="partner['dates']"/><br/>
-                                        <t t-set="num" t-value="partner_size + 1"/>
+                                        <t t-if="partner['dates']">
+                                            <span t-esc="num"/> - <span t-esc="partner['dates']"/><br/><br/>
+                                            <t t-set="num" t-value="num + 1"/>
+                                        </t>
                                     </t>
                                     <t t-foreach="time['free_seatsD']" t-as="free_seat">
                                         <t t-set="number" t-value="free_seat_index + num"/>
